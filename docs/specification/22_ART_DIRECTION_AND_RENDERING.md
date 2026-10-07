@@ -280,6 +280,37 @@ KCB-ART-191 — Overlay legends must use shape/pattern/value in addition to colo
 
 KCB-ART-200 — Every canonical tile has a visual-reference capture for art QA.
 
+## Primitive Visual Grammar
+
+The first production-quality visual implementation deliberately uses a small set of highly reusable primitive meshes rather than requiring a large bespoke 3D art library before gameplay is proven.
+
+Core primitive vocabulary:
+- box/cuboid;
+- cylinder;
+- sphere/ellipsoid;
+- capsule;
+- wedge/prism;
+- plane/quad;
+- simple spline/extrusion sections for roads, rails, pipes and water edges.
+
+Buildings, vehicles, vegetation, service assets and props MAY initially be assembled from these shapes using deterministic scale, rotation, palette and module rules.
+
+The intended result is not temporary grey-box programmer art. It is a deliberate stylised architectural-model presentation of Concordia using the canonical pale structural palette, orange accents, blue-glass approximations, dark mechanical details and integrated greenery.
+
+KCB-ART-230 — Initial gameplay-ready city content MUST be representable through Primitive Visual Grammar without bespoke high-detail meshes.
+
+KCB-ART-231 — Primitive assemblies MUST use stable visual archetype IDs separate from simulation IDs.
+
+KCB-ART-232 — A visual archetype MAY later resolve to authored high-quality meshes/materials without changing authoritative simulation state or save identity.
+
+KCB-ART-233 — Primitive parts SHOULD use shared meshes/materials and GPU instancing wherever practical.
+
+KCB-ART-234 — Primitive materials MUST support deterministic palette variation without cloning a unique material per object.
+
+KCB-ART-235 — The primitive renderer remains supported as a permanent low-cost graphics mode after higher-fidelity content is introduced.
+
+KCB-ART-236 — Primitive and high-fidelity representations of the same archetype MUST communicate the same important simulation state.
+
 ## Performance budgets
 
 Exact numbers are platform dependent and must be fixed in implementation planning, but budgets MUST exist for:

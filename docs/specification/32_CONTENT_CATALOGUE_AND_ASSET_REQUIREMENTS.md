@@ -284,6 +284,40 @@ KCB-CONT-100 — Asset filename and content stable ID are separate.
 KCB-CONT-101 — IDs are lower-case stable slugs/namespaces per project standard.
 KCB-CONT-102 — Renaming an asset file does not require changing persistent game identity.
 
+## Primitive-first production baseline
+
+V1 implementation begins with a deliberately small reusable geometry vocabulary. High-quality bespoke 3D production is not a prerequisite for proving gameplay systems.
+
+Initial reusable mesh target:
+- one canonical unit cube/cuboid mesh;
+- one cylinder;
+- one sphere;
+- one capsule;
+- one wedge/prism;
+- one plane/quad;
+- spline/extrusion profiles for roads and linear infrastructure.
+
+Initial shared material families:
+- pale civic/structural;
+- orange Commonwealth accent;
+- blue glass approximation;
+- dark mechanical;
+- neutral paving;
+- water;
+- vegetation;
+- warning/construction;
+- overlay/debug.
+
+KCB-CONT-110 — Every vertical-slice building family MUST have a gameplay-ready primitive visual archetype before high-fidelity asset production is required.
+
+KCB-CONT-111 — Primitive visual definitions are data-driven and keyed by stable archetype ID.
+
+KCB-CONT-112 — High-quality art production MAY replace primitive archetype render bindings incrementally by content family.
+
+KCB-CONT-113 — A high-quality replacement MUST NOT require a parallel simulation definition for the same building/vehicle/service identity.
+
+KCB-CONT-114 — The asset pipeline MUST support primitive fallback when an optional high-fidelity asset is unavailable or disabled by graphics quality.
+
 ## Initial production estimate categories
 
 Implementation planning should produce exact counts for:

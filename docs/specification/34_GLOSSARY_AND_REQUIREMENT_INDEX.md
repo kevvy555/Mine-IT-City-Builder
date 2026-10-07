@@ -42,6 +42,10 @@
 
 **Procedural grammar** — authored rules/modules used to generate varied buildings or urban form.
 
+**Primitive Visual Grammar** — the initial intentional render system that assembles game visuals from a small instanced vocabulary of simple 3D shapes and shared palette materials.
+
+**Visual archetype ID** — stable presentation-facing ID that maps one simulation/content identity to a primitive or higher-fidelity render representation without changing authoritative state.
+
 **Representation LOD** — visual fidelity/representation of an entity at a given importance/distance.
 
 **Right of way** — corridor carrying streets, paths, transit and possibly utilities.
