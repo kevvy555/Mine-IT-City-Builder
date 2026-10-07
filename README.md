@@ -10,6 +10,7 @@ The full specification catalogue lives at:
 
 - [Specification catalogue](docs/specification/README.md)
 - [Implementation plan catalogue](docs/implementation/README.md)
+- [QA and specification acceptance plan](docs/qa/README.md)
 
 ## MineIT Universe canon
 
