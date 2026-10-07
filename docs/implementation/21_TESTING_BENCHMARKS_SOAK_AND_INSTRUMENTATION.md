@@ -1,5 +1,24 @@
 # 21 — Testing, Benchmarks, Soak and Instrumentation
 
+## Relationship to the QA acceptance catalogue
+
+This document defines the **engineering test harness, benchmark infrastructure and instrumentation**.
+
+The authoritative specification-acceptance strategy lives in [docs/qa/README.md](../qa/README.md).
+
+Implementation tests created here must execute the QA cases defined there. In particular:
+
+- laboratory fixtures come from `docs/qa/02_REFERENCE_LABORATORY_CITIES.md`;
+- invariants come from `docs/qa/03_INVARIANTS_AND_CONSERVATION.md`;
+- causal tests come from `docs/qa/04_CAUSAL_AND_DIRECTIONAL_TESTS.md`;
+- cross-system scenarios come from `docs/qa/06_CROSS_SYSTEM_SCENARIOS.md`;
+- save/determinism acceptance comes from `docs/qa/08_SAVE_MIGRATION_AND_DETERMINISM.md`;
+- Android performance acceptance comes from `docs/qa/09_ANDROID_PERFORMANCE_AND_DEVICE_QA.md`;
+- UX/accessibility acceptance comes from `docs/qa/10_MOBILE_UX_ACCESSIBILITY_AND_EXPLAINABILITY.md`;
+- long-run acceptance comes from `docs/qa/11_LONG_RUN_STABILITY_AND_BALANCE.md`.
+
+A test harness capability without a linked QA acceptance case does not by itself prove a KCB requirement.
+
 ## Test pyramid
 
 ### Pure unit tests
