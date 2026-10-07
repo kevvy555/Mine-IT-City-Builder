@@ -6,6 +6,20 @@ Phases are dependency/risk ordered, not calendar promises. Do not assign duratio
 
 Each phase gets its own feature branch or coherent branch series from latest `main`.
 
+## QA execution rule
+
+The QA catalogue at [docs/qa/README.md](../qa/README.md) is the acceptance oracle for this roadmap.
+
+Each implementation phase must:
+
+1. identify the KCB requirements being implemented;
+2. identify the linked QA IDs and fixtures;
+3. implement/enable those QA cases as the feature becomes runnable;
+4. retain evidence for the phase gate;
+5. leave no required KCB item at `Implemented` when its gate requires `Verified`.
+
+QA is executed continuously through the phases and comprehensively again at the final **Gate QA — Specification Acceptance**.
+
 ## Phase 0 — Planning integration
 
 Scope:
@@ -13,6 +27,7 @@ Scope:
 - merge approved technology/spec changes;
 - merge implementation catalogue;
 - requirement ownership validator design;
+- QA acceptance catalogue integration and KCB -> QA coverage mapping;
 - create initial GitHub issues/milestones if desired.
 
 Exit:
@@ -342,6 +357,7 @@ Scope:
 | E | canonical Koplin visual identity |
 | F | 250k Android scale |
 | G | migrations/content/accessibility/CI production readiness |
+| QA | full specification acceptance against `docs/qa/` |
 
 ## Gate discipline
 
@@ -354,3 +370,10 @@ A gate may be:
 “Looks good” is not a gate result. Every gate has stored test/benchmark evidence and commit SHA.
 
 A failed gate blocks phases whose risk depends on it.
+
+
+## Gate QA — Specification Acceptance
+
+After Gates A–G and before production release, execute the final acceptance process in [docs/qa/13_FINAL_SPECIFICATION_ACCEPTANCE_GATE.md](../qa/13_FINAL_SPECIFICATION_ACCEPTANCE_GATE.md).
+
+Gate QA answers whether the finished implementation actually satisfies the complete approved specification. It requires full requirement coverage, automated correctness, persistence/migration, long-run, Android/device, UX/accessibility and canon evidence.
