@@ -1,10 +1,10 @@
 # Koplin City Builder — Specification Catalogue
 
-**Status:** Pre-implementation specification  
+**Status:** Specification complete; implementation planning in progress  
 **Working title:** Koplin City Builder  
 **Setting:** Koplin 3, primarily Concordia on the Zoran continent  
 **Canon baseline:** MineIT Universe plus the Koplin 3 canonical atlas  
-**Implementation status:** Not started
+**Implementation status:** Technology baseline approved; implementation not started
 
 ## Purpose
 
