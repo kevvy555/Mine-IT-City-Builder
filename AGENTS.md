@@ -40,6 +40,36 @@ Long-form lore is canonical authored content, not commentary.
 
 If imported or structured data conflicts with higher-precedence lore, resolve the conflict in favour of the higher-precedence source rather than inventing a new interpretation locally.
 
+## Branching and integration
+
+`main` is the stable integration branch. Do not use `main` as the normal working branch for feature development, fixes, refactors, balancing work, asset work, or substantial documentation changes.
+
+Create a fresh branch from the latest `main` for each coherent unit of work.
+
+Use clear branch names such as:
+
+- `feature/<short-description>`
+- `fix/<short-description>`
+- `docs/<short-description>`
+- `refactor/<short-description>`
+- `chore/<short-description>`
+
+Before starting a new implementation slice, refresh from the latest `main` and branch from that current head. Do not continue unrelated work on a stale feature branch merely because it already exists.
+
+Keep a branch focused on one coherent goal. Do not mix unrelated features or opportunistic redesigns into the same branch.
+
+Commit progress in logical, reviewable increments. A long implementation should have meaningful intermediate commits rather than one very large final commit.
+
+Push work regularly so progress is recoverable and visible.
+
+Open a pull request back to `main` when a branch reaches an integration-ready state. The PR should state the implemented scope, relevant `KCB-*` requirements, specification changes, tests/validation performed, and any known deferred work.
+
+Do not merge a branch with known failing required tests or validation unless the failure is explicitly documented and the merge is an intentional recovery action.
+
+After merge, treat `main` as the new source point. New work should branch from the updated `main`, not from the previously merged feature branch.
+
+Direct commits to `main` should be limited to repository bootstrap/administrative changes, trivial emergency corrections, or an explicit user instruction. Normal development belongs on branches.
+
 ## Specification authority
 
 The City Builder specification lives under:
@@ -55,6 +85,30 @@ The specification is normative unless explicitly labelled as research, example, 
 Stable requirements use `KCB-*` identifiers. Implementation tasks, architecture decisions, tests and acceptance criteria should trace back to those requirement IDs wherever practical.
 
 Do not silently implement behaviour that contradicts the specification. If implementation reveals that a requirement is wrong or impossible, update the specification and record the decision rather than allowing code and specification to drift.
+
+## Keeping the specification current
+
+The specification must describe the game that is actually being built.
+
+Any implementation change that adds, removes, narrows, expands, rebalances, or materially reinterprets specified behaviour must update the affected specification documents in the **same branch and pull request**.
+
+Do not postpone specification updates to a later cleanup task when the implementation has already changed the design.
+
+When implementation discovers a missing requirement, ambiguity, contradiction or better design:
+
+1. update the relevant specification document;
+2. add or revise the relevant `KCB-*` requirement where appropriate;
+3. update linked implementation/architecture documentation;
+4. implement against that revised requirement;
+5. update tests and acceptance criteria so they verify the same behaviour.
+
+If the code and specification disagree, the work is not complete. Either change the code to match the specification or deliberately change the specification and record the new decision.
+
+A feature, phase or milestone must not be marked complete until its normative specification, implementation, tests and acceptance criteria agree.
+
+Keep the master index, cross-references, glossary and requirement index current when documents or requirement IDs are added, renamed, split, merged or retired.
+
+Do not leave obsolete normative text in place beside a newer production behaviour. Replace or explicitly deprecate it so there is one authoritative current design.
 
 ## Research is not canon
 
