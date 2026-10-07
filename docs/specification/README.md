@@ -1,6 +1,6 @@
 # Koplin City Builder — Specification Catalogue
 
-**Status:** Specification complete; implementation planning in progress  
+**Status:** Specification complete; detailed implementation plan drafted  
 **Working title:** Koplin City Builder  
 **Setting:** Koplin 3, primarily Concordia on the Zoran continent  
 **Canon baseline:** MineIT Universe plus the Koplin 3 canonical atlas  
@@ -141,3 +141,7 @@ The implementation plan MUST trace work items back to these requirement IDs.
 ## Repository ownership
 
 This catalogue is authoritative in `kevvy555/Mine-IT-City-Builder`. MineIT-Universe remains authoritative for shared Universe canon. The original specification was migrated from MineIT-Universe commit `ba3235d8b4c6e5d55408903952c466b85e3f1dae`.
+
+## Implementation plan
+
+The detailed engineering plan is maintained separately at [docs/implementation/README.md](../implementation/README.md). The specification remains authoritative for intended behaviour; the implementation catalogue defines the approved technical realisation and delivery sequence.
