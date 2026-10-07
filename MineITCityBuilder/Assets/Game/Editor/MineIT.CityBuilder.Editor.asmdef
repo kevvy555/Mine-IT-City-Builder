@@ -1,0 +1,19 @@
+{
+  "name": "MineIT.CityBuilder.Editor",
+  "rootNamespace": "MineIT.CityBuilder.Editor",
+  "references": [
+    "MineIT.CityBuilder.Bootstrap",
+    "Unity.RenderPipelines.Universal.Runtime"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
