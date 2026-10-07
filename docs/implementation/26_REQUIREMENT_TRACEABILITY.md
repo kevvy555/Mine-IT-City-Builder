@@ -53,13 +53,31 @@ This satisfies the requirement that every normative KCB item has an owner while 
 
 Every prefix currently present in `docs/specification/` appears above. Any new prefix must fail requirement-index CI until ownership is added.
 
+## QA traceability extension
+
+The QA catalogue at [docs/qa/README.md](../qa/README.md) extends implementation traceability into acceptance traceability.
+
+Each generated requirement row must eventually include:
+
+- one or more `QA-*` verification IDs;
+- verification type;
+- reference fixture/scenario where applicable;
+- execution stage;
+- verification status;
+- last passing build/commit;
+- evidence reference.
+
+The mapping rules are defined in [docs/qa/01_REQUIREMENT_ACCEPTANCE_AND_COVERAGE.md](../qa/01_REQUIREMENT_ACCEPTANCE_AND_COVERAGE.md).
+
+A KCB requirement is not fully complete merely because its implementation task is `Implemented`; it becomes release-accepted only when the mapped QA evidence is passing/accepted.
+
 ## Derived registry format
 
 `tools/RequirementIndex` will parse Markdown lines containing a requirement ID and output:
 
 ```csv
-requirement_id,source_document,source_line,owner_document,owner_epic,verification,status
-KCB-MAP-001,...,07_WORLD_ATLAS_CHUNKS_AND_STREAMING.md,IMP-WLD,spatial-test,Planned
+requirement_id,source_document,source_line,owner_document,owner_epic,qa_id,verification,fixture,execution_stage,status,last_verified_commit,evidence
+KCB-MAP-001,...,07_WORLD_ATLAS_CHUNKS_AND_STREAMING.md,IMP-WLD,QA-SAV/QA-INV,spatial-test,atlas-roundtrip,Gate-A-or-domain,Planned,,
 ...
 ```
 
