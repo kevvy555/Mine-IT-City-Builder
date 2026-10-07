@@ -5,13 +5,28 @@
 **Target:** Android phones and tablets  
 **Engine:** Unity 6.3 LTS  
 **Primary architecture:** C# + Unity Entities/DOTS + Burst + Job System + URP  
-**Source specification:** `docs/specification/`
+**Source specification:** `docs/specification/`  
+**QA acceptance plan:** `docs/qa/`
 
 ## Purpose
 
 This catalogue turns the normative Koplin City Builder specification into an executable engineering plan. It defines the technical foundation, repository structure, domain boundaries, delivery phases, performance budgets, prototypes, CI/CD, save strategy, Universe integration, requirement ownership and acceptance gates needed before and during production.
 
 The specification remains the product/design authority. This implementation catalogue defines **how** the approved requirements will be realised. If implementation work changes intended behaviour, the specification must be updated in the same branch and pull request.
+
+## QA acceptance contract
+
+The QA catalogue at [docs/qa/README.md](../qa/README.md) defines how completed implementation is verified against the specification.
+
+The implementation plan and QA plan are complementary:
+
+- `docs/specification/` defines **what the game must do**;
+- `docs/implementation/` defines **how it will be built**;
+- `docs/qa/` defines **how we prove the implementation matches the specification**.
+
+Every implementation phase must identify the QA IDs, fixtures, invariants, benchmarks and manual acceptance checks that will verify its KCB requirements. A feature is not complete when code merely exists; it is complete only when its required QA evidence passes.
+
+The existing testing/benchmark implementation document defines the test infrastructure and execution machinery. The QA catalogue defines the behavioural acceptance oracle and final specification sign-off.
 
 ## Plan conventions
 
@@ -130,7 +145,7 @@ No content-heavy phase may bypass a failed architecture/performance gate.
 
 ## Required first deliverable
 
-The first executable milestone is deliberately small: a GitHub Actions workflow must generate an installable Android APK containing a touch-controlled 3D scene with a camera, deterministic primitive Concordia blockout, diagnostic overlay and build/version metadata. This proves the complete repository -> CI -> Unity -> Android path before major systems work begins.
+The first executable milestone is deliberately small. Its implementation PR must also establish the first runnable QA evidence defined by the QA catalogue: a GitHub Actions workflow must generate an installable Android APK containing a touch-controlled 3D scene with a camera, deterministic primitive Concordia blockout, diagnostic overlay and build/version metadata. This proves the complete repository -> CI -> Unity -> Android path before major systems work begins.
 
 ## Definition of plan complete
 
