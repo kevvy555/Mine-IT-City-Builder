@@ -4,6 +4,51 @@
 
 This document defines what the next phase — implementation planning — must produce. It is intentionally not an implementation plan itself.
 
+## Resolved implementation baseline
+
+The implementation-planning phase has now frozen the following v1 foundation decisions.
+
+| Decision | Locked v1 baseline |
+|---|---|
+| Target platform | Android phones and tablets, landscape-first |
+| Minimum OS | Android 10 / API 29 |
+| Store target | Android API 36 |
+| CPU architecture | ARM64 |
+| Engine | Unity 6.3 LTS |
+| Language | C# |
+| Simulation stack | Unity Entities/DOTS + Burst + Job System |
+| Rendering | Universal Render Pipeline (URP) |
+| Graphics API | Vulkan primary; OpenGL ES fallback where supported |
+| UI | Unity UI Toolkit with touch-first interaction |
+| Asset/content loading | Addressables/content catalogues |
+| Build backend | IL2CPP |
+| Baseline frame target | 30 FPS gameplay; 60 FPS optional on capable devices |
+| Primary population scale | 250,000 persistent citizens |
+| Stretch population scale | 1,000,000 persistent/aggregated citizens subject to benchmark gates |
+| Detailed v1 city extent | 100 canonical 1 km² atlas tiles, streamed rather than resident |
+| Runtime spatial subdivision | 250 m x 250 m chunks; 16 runtime chunks per canonical atlas tile |
+| Simulation/render relationship | Authoritative simulation fully separated from visual representation |
+| Traffic/pathfinding | Purpose-built multimodal graphs; no Rigidbody/NavMesh dependency for authoritative city traffic |
+| Initial visual production | Primitive Visual Grammar using instanced blocks, cylinders, spheres, capsules, wedges/planes and palette materials |
+| Future visual upgrade | Visual archetype IDs allow high-quality meshes/materials to replace primitive representations without simulation changes |
+| Save technology | Explicitly versioned chunked binary container with deterministic, reflection-free per-domain codecs |
+| Canon integration | Pinned MineIT-Universe commit imported and validated at build/content-generation time |
+| Networking | Offline single-player v1 |
+| Modding | Data-driven internal extension points; public arbitrary code mods deferred beyond v1 |
+| Campaign year | Year 5300 baseline |
+| Player role | Concordia Metropolitan Steward (game-facing role, not new Universe canon) |
+
+KCB-HAND-050 — These decisions are normative for v1 implementation unless deliberately revised in the specification and implementation plan together.
+
+KCB-HAND-051 — Primitive rendering is an intentional gameplay-ready presentation mode and MUST remain available as a low-cost graphics mode after higher-fidelity assets are introduced.
+
+KCB-HAND-052 — High-quality art replacement MUST bind through stable visual/content archetype IDs and MUST NOT require simulation-state migration merely because a render asset changes.
+
+KCB-HAND-053 — The 250,000-citizen target MUST be proven on the agreed Android reference device class before content-heavy production is considered scale-safe.
+
+KCB-HAND-054 — The one-million-citizen target is a stretch benchmark and MAY use more aggressive simulation aggregation while preserving authoritative totals and expected outcomes.
+
+
 ## Decisions the implementation plan must freeze
 
 KCB-HAND-001 — Target platforms and minimum hardware.
@@ -156,22 +201,17 @@ Requirement ID | Owner epic | Implementation task | Test | Status
 
 KCB-HAND-030 — No MUST requirement may remain without an owner or explicit defer decision.
 
-## Open decisions — intentionally deferred
+## Remaining deferred product decisions
 
-These are not missing specification by accident:
-- engine;
-- PC-only versus PC/mobile/other;
-- exact Concordia population;
-- exact map size at v1;
-- exact player civic title;
-- exact campaign year;
-- multiplayer;
-- full interior scenes;
-- detailed election system;
+The following are deliberately outside the v1 implementation baseline unless promoted by a later specification change:
+- multiplayer/networked city play;
+- full explorable building interiors;
+- detailed election simulation beyond mandate/governance systems;
 - planetary globe gameplay;
-- complete economic inflation model.
+- complete macroeconomic inflation modelling;
+- public arbitrary-code mod execution on Android.
 
-Each must be resolved or explicitly marked post-v1 during implementation planning.
+These items require an explicit future specification decision before implementation.
 
 ## Risk register seeds
 
