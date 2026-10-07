@@ -40,6 +40,28 @@ Rules:
 - upgrades run deterministic, save, benchmark and Android build suites;
 - a package upgrade cannot silently change simulation behaviour.
 
+## Resolved Phase 1 toolchain
+
+The bootstrap implementation has frozen the following exact versions:
+
+| Component | Phase 1 pin |
+|---|---|
+| Unity Editor | 6000.3.25f1 |
+| Unity revision | e1dba0a9aba4 |
+| Entities | 1.5.0 |
+| Entities Graphics | 1.5.0 |
+| Burst | 1.8.30 |
+| Collections | 2.6.8 |
+| Input System | 1.20.1 |
+| Addressables | 2.10.3 |
+| Mathematics | 1.3.3 |
+| URP | 17.3.0 |
+| Unity Test Framework | 1.6.0 |
+
+The machine-readable pin is `config/unity.lock.json`. The package manifest and CI sanity job must agree with that lock.
+
+Package upgrades remain dedicated changes and must rerun Android build, deterministic tests and relevant performance checks.
+
 ## Android baseline
 
 ### OS and ABI
