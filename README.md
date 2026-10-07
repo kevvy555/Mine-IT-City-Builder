@@ -4,11 +4,12 @@ Dedicated repository for the MineIT city-builder game set on Koplin 3, centred o
 
 ## Current phase
 
-The project is currently in **pre-implementation specification**.
+The specification is complete and the project is currently in **detailed implementation planning**.
 
 The full specification catalogue lives at:
 
-- [docs/specification/README.md](docs/specification/README.md)
+- [Specification catalogue](docs/specification/README.md)
+- [Implementation plan catalogue](docs/implementation/README.md)
 
 ## MineIT Universe canon
 
