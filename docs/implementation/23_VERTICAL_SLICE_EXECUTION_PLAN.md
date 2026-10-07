@@ -288,6 +288,30 @@ A reviewer must be able to perform:
 17. reload same city;
 18. verify state/history persists.
 
+## Vertical-slice QA contract
+
+The slice must execute the corresponding acceptance cases from `docs/qa/`.
+
+Minimum required QA evidence includes:
+
+- QA-LAB-001 Balanced District baseline;
+- QA-LAB-003 Congested Corridor where traffic is present;
+- QA-LAB-006 Power Bottleneck;
+- QA-INV identity/population/economy/mobility/save invariants relevant to implemented domains;
+- QA-CAU-002 Bridge/route closure equivalent once network closure is implemented;
+- QA-CAU-030 Power Bottleneck;
+- QA-UX-001 navigation/inspection;
+- QA-UX-002 road construction;
+- QA-UX-003 underperformance diagnosis;
+- QA-UX-004 power diagnosis;
+- QA-SAV-001 immediate roundtrip;
+- QA-SAV-002 midpoint equivalence;
+- QA-SAV-004 interrupted write;
+- QA-PERF-002 PVG instance scale;
+- QA-PERF-003 B10K.
+
+Vertical-slice acceptance evidence is recorded using `docs/qa/12_EXECUTION_EVIDENCE_AND_DEFECT_PROCESS.md`.
+
 ## Slice rejection conditions
 
 Reject the slice even if it looks impressive if:
