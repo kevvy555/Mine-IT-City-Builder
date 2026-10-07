@@ -92,7 +92,6 @@ jobs:
           projectPath: MineITCityBuilder
           unityVersion: 6000.3.25f1
           testMode: EditMode
-          coverageEnabled: false
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           checkName: MineIT City Builder EditMode
 
