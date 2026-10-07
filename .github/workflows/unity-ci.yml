@@ -1,0 +1,135 @@
+name: Unity Android CI
+
+on:
+  push:
+    branches:
+      - main
+      - 'feature/**'
+      - 'fix/**'
+      - 'refactor/**'
+    paths:
+      - 'MineITCityBuilder/**'
+      - 'config/unity.lock.json'
+      - '.github/workflows/unity-ci.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'MineITCityBuilder/**'
+      - 'config/unity.lock.json'
+      - '.github/workflows/unity-ci.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: unity-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  checks: write
+
+jobs:
+  sanity:
+    name: Validate pinned Unity configuration
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate project and package lock
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          root = Path(".")
+          lock = json.loads((root / "config/unity.lock.json").read_text())
+          manifest = json.loads((root / "MineITCityBuilder/Packages/manifest.json").read_text())
+          project_version = (root / "MineITCityBuilder/ProjectSettings/ProjectVersion.txt").read_text()
+
+          expected_unity = lock["unityEditor"]
+          if f"m_EditorVersion: {expected_unity}" not in project_version:
+              raise SystemExit(f"ProjectVersion does not match pinned Unity {expected_unity}")
+
+          for package, version in lock["packages"].items():
+              actual = manifest["dependencies"].get(package)
+              if actual != version:
+                  raise SystemExit(
+                      f"{package}: manifest={actual!r}, lock={version!r}"
+                  )
+
+          generated = list(
+              (root / "MineITCityBuilder/Assets/Game/Generated").glob("**/*")
+          ) if (root / "MineITCityBuilder/Assets/Game/Generated").exists() else []
+          tracked_generated = [p for p in generated if p.is_file()]
+          if tracked_generated:
+              raise SystemExit(
+                  "Generated bootstrap assets must not be committed: "
+                  + ", ".join(map(str, tracked_generated))
+              )
+
+          print(f"Unity {expected_unity} package lock is consistent.")
+          PY
+
+  editmode-tests:
+    name: Unity EditMode tests
+    needs: sanity
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run EditMode tests
+        id: tests
+        uses: game-ci/unity-test-runner@v4.4.0
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: MineITCityBuilder
+          unityVersion: 6000.3.25f1
+          testMode: EditMode
+          coverageEnabled: false
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          checkName: MineIT City Builder EditMode
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unity-editmode-results-${{ github.run_number }}
+          path: ${{ steps.tests.outputs.artifactsPath }}
+          if-no-files-found: warn
+          retention-days: 14
+
+  android-apk:
+    name: Build Android APK
+    needs: editmode-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Android bootstrap APK
+        uses: game-ci/unity-builder@v5.0.0
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: MineITCityBuilder
+          unityVersion: 6000.3.25f1
+          targetPlatform: Android
+          buildMethod: MineIT.CityBuilder.Editor.BootstrapBuild.BuildAndroid
+
+      - name: Upload versioned APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: MineIT-City-Builder-dev-${{ github.run_number }}
+          path: build/Android/*.apk
+          if-no-files-found: error
+          retention-days: 14
