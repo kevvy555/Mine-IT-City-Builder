@@ -19,6 +19,12 @@ KCB-MAP-002 — Simulation chunks MAY subdivide atlas tiles but MUST have determ
 
 KCB-MAP-003 — Save data MUST reference stable spatial IDs instead of array positions.
 
+TUNING BASELINE — Each canonical 1 km x 1 km atlas tile is subdivided into a deterministic 4 x 4 grid of 250 m x 250 m runtime chunks, giving 16 runtime chunks per atlas tile.
+
+KCB-MAP-004 — Runtime chunk IDs MUST derive from canonical atlas coordinate plus local 0–15 chunk index and MUST remain stable across save/load.
+
+KCB-MAP-005 — Runtime chunk subdivision is an implementation/streaming unit and MUST NOT alter canonical atlas identity or coordinates.
+
 ## Canonical start area
 
 The Concordia scenario starts from the canonical atlas, with the Federal Forum at 0,0.
