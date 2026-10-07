@@ -54,6 +54,14 @@ A feature/task is **Complete** only when all applicable items are true.
 - user strings use localisation keys;
 - accessible label/state supplied for UI.
 
+### QA acceptance
+
+- relevant `QA-*` cases identified;
+- new/changed KCB requirements have QA mapping;
+- required laboratory/causal/invariant scenarios updated;
+- evidence produced when the feature is runnable;
+- failed acceptance is fixed or explicitly returned to design/specification.
+
 ### Tests
 
 - unit/system tests;
@@ -76,7 +84,7 @@ PR body includes:
 - IMP tasks;
 - KCB requirements;
 - spec changes;
-- testing;
+- testing and QA IDs/evidence;
 - benchmark/performance;
 - save compatibility;
 - screenshots/video when visual;
@@ -190,6 +198,24 @@ Required:
 - CI/release pipeline;
 - crash/compatibility handling;
 - first 100 km² production workflow proven.
+
+## Gate QA — Final specification acceptance
+
+After implementation Gates A–G, execute [docs/qa/13_FINAL_SPECIFICATION_ACCEPTANCE_GATE.md](../qa/13_FINAL_SPECIFICATION_ACCEPTANCE_GATE.md).
+
+Gate QA requires, at minimum:
+
+- complete KCB -> QA mapping;
+- all non-deferred MUST requirements executed;
+- automated correctness/invariants passing;
+- save/migration/determinism acceptance;
+- required 100-year stability suite;
+- B250K Android evidence;
+- mobile UX/accessibility acceptance;
+- canon/content acceptance;
+- zero open Blocker/Critical defects.
+
+Code-complete is not specification-complete until Gate QA passes.
 
 ## Release candidate gate
 
