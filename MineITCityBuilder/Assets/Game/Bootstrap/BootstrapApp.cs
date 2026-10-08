@@ -6,6 +6,7 @@ namespace MineIT.CityBuilder.Bootstrap
 {
     public sealed class BootstrapApp : MonoBehaviour
     {
+        private World _world;
         private EntityManager _entityManager;
         private EntityQuery _agentQuery;
         private EntityQuery _counterQuery;
@@ -15,6 +16,7 @@ namespace MineIT.CityBuilder.Bootstrap
         private bool _paused;
         private bool _focused = true;
         private float _nextMetricsUpdate;
+        private bool _queriesReady;
 
         private void Awake()
         {
@@ -65,6 +67,7 @@ namespace MineIT.CityBuilder.Bootstrap
                 return;
             }
 
+            _world = world;
             _entityManager = world.EntityManager;
             var archetype = _entityManager.CreateArchetype(typeof(BootstrapAgent));
             using var entities = new NativeArray<Entity>(BootstrapLayout.BuildingCount, Allocator.Temp);
@@ -77,6 +80,7 @@ namespace MineIT.CityBuilder.Bootstrap
 
             _agentQuery = _entityManager.CreateEntityQuery(ComponentType.ReadOnly<BootstrapAgent>());
             _counterQuery = _entityManager.CreateEntityQuery(ComponentType.ReadOnly<BootstrapCounter>());
+            _queriesReady = true;
         }
 
         private void Update()
@@ -87,8 +91,8 @@ namespace MineIT.CityBuilder.Bootstrap
             }
 
             _nextMetricsUpdate = Time.unscaledTime + 0.25f;
-            var agents = _agentQuery.IsCreated ? _agentQuery.CalculateEntityCount() : 0;
-            var ticks = _counterQuery.IsCreated && _counterQuery.CalculateEntityCount() == 1
+            var agents = _queriesReady ? _agentQuery.CalculateEntityCount() : 0;
+            var ticks = _queriesReady && _counterQuery.CalculateEntityCount() == 1
                 ? _counterQuery.GetSingleton<BootstrapCounter>().Ticks
                 : 0u;
             var instances = _renderer != null ? _renderer.TotalInstanceCount : 0;
@@ -109,10 +113,12 @@ namespace MineIT.CityBuilder.Bootstrap
 
         private void OnDestroy()
         {
-            if (_entityManager.IsCreated && _agentQuery.IsCreated)
+            if (_queriesReady && _world != null && _world.IsCreated)
             {
                 _entityManager.DestroyEntity(_agentQuery);
             }
+
+            _queriesReady = false;
         }
     }
 }
