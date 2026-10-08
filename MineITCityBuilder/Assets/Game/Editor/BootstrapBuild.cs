@@ -17,6 +17,7 @@ namespace MineIT.CityBuilder.Editor
         public const string GeneratedScenePath = "Assets/Game/Generated/Bootstrap/Bootstrap.unity";
         public const string PipelineAssetPath = "Assets/Game/Generated/Settings/MineIT_URP.asset";
         public const string BuildInfoPath = "Assets/Game/Generated/Resources/build-info.json";
+        public const string GeneratedResourcesRoot = "Assets/Game/Generated/Resources";
 
         [MenuItem("MineIT/Bootstrap/Configure Android Project")]
         public static void ConfigureProject()
@@ -44,6 +45,7 @@ namespace MineIT.CityBuilder.Editor
 
             EditorUserBuildSettings.buildAppBundle = false;
             CreateOrAssignUrp();
+            CreatePrimitiveMaterials();
             WriteBuildInfo();
             CreateBootstrapScene();
 
@@ -126,6 +128,54 @@ namespace MineIT.CityBuilder.Editor
             GraphicsSettings.defaultRenderPipeline = pipeline;
             QualitySettings.renderPipeline = pipeline;
             EditorUtility.SetDirty(pipeline);
+        }
+
+        private static void CreatePrimitiveMaterials()
+        {
+            var shader = Shader.Find("Universal Render Pipeline/Lit");
+            if (shader == null)
+            {
+                throw new BuildFailedException(
+                    "URP Lit shader is unavailable while generating bootstrap PVG materials.");
+            }
+
+            foreach (var definition in PrimitiveMaterialLibrary.Definitions)
+            {
+                var assetPath = $"{GeneratedResourcesRoot}/{definition.ResourcePath}.mat";
+                EnsureDirectory(Path.GetDirectoryName(assetPath));
+
+                var material = AssetDatabase.LoadAssetAtPath<Material>(assetPath);
+                if (material == null)
+                {
+                    material = new Material(shader);
+                    AssetDatabase.CreateAsset(material, assetPath);
+                }
+                else
+                {
+                    material.shader = shader;
+                }
+
+                material.name = definition.DisplayName;
+                material.enableInstancing = true;
+
+                if (material.HasProperty("_BaseColor"))
+                {
+                    material.SetColor("_BaseColor", definition.Colour);
+                }
+                else
+                {
+                    material.color = definition.Colour;
+                }
+
+                if (material.HasProperty("_Smoothness"))
+                {
+                    material.SetFloat("_Smoothness", 0.42f);
+                }
+
+                EditorUtility.SetDirty(material);
+            }
+
+            AssetDatabase.SaveAssets();
         }
 
         private static void CreateBootstrapScene()

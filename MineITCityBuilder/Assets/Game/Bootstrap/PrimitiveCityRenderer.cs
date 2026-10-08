@@ -23,6 +23,7 @@ namespace MineIT.CityBuilder.Bootstrap
         private Material _accentMaterial;
         private Material _groundMaterial;
         private Matrix4x4 _ground;
+        private bool _materialsReady;
 
         public int BaseInstanceCount { get; private set; }
         public int AccentInstanceCount => _accents.Count;
@@ -31,14 +32,31 @@ namespace MineIT.CityBuilder.Bootstrap
         private void OnEnable()
         {
             _cube = PrimitiveMeshFactory.CreateUnitCube();
+
             _buildingMaterials = new[]
             {
-                CreateMaterial("PVG Pale Structure", new Color(0.82f, 0.86f, 0.88f)),
-                CreateMaterial("PVG Blue Glass", new Color(0.26f, 0.48f, 0.62f)),
-                CreateMaterial("PVG Light Composite", new Color(0.64f, 0.69f, 0.71f))
+                LoadMaterial(PrimitiveMaterialLibrary.PaleStructure),
+                LoadMaterial(PrimitiveMaterialLibrary.BlueGlass),
+                LoadMaterial(PrimitiveMaterialLibrary.LightComposite)
             };
-            _accentMaterial = CreateMaterial("PVG Commonwealth Orange", new Color(0.93f, 0.38f, 0.08f));
-            _groundMaterial = CreateMaterial("PVG Ground", new Color(0.055f, 0.071f, 0.081f));
+            _accentMaterial = LoadMaterial(PrimitiveMaterialLibrary.CommonwealthOrange);
+            _groundMaterial = LoadMaterial(PrimitiveMaterialLibrary.Ground);
+
+            _materialsReady =
+                _buildingMaterials[0] != null &&
+                _buildingMaterials[1] != null &&
+                _buildingMaterials[2] != null &&
+                _accentMaterial != null &&
+                _groundMaterial != null;
+
+            if (!_materialsReady)
+            {
+                Debug.LogError(
+                    "MineIT bootstrap PVG materials are missing from the player build. " +
+                    "The renderer has been disabled to avoid repeated draw exceptions.");
+                enabled = false;
+                return;
+            }
 
             var instances = BootstrapLayout.Generate();
             BaseInstanceCount = instances.Length;
@@ -71,7 +89,7 @@ namespace MineIT.CityBuilder.Bootstrap
 
         private void LateUpdate()
         {
-            if (_cube == null)
+            if (_cube == null || !_materialsReady)
             {
                 return;
             }
@@ -91,6 +109,11 @@ namespace MineIT.CityBuilder.Bootstrap
 
         private void DrawBatches(List<Matrix4x4> matrices, Material material)
         {
+            if (material == null)
+            {
+                return;
+            }
+
             for (var start = 0; start < matrices.Count; start += MaxBatch)
             {
                 var count = Mathf.Min(MaxBatch, matrices.Count - start);
@@ -101,27 +124,12 @@ namespace MineIT.CityBuilder.Bootstrap
             }
         }
 
-        private static Material CreateMaterial(string name, Color colour)
+        private static Material LoadMaterial(string resourcePath)
         {
-            var shader = Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Standard");
-            var material = new Material(shader)
+            var material = Resources.Load<Material>(resourcePath);
+            if (material == null)
             {
-                name = name,
-                enableInstancing = true
-            };
-
-            if (material.HasProperty("_BaseColor"))
-            {
-                material.SetColor("_BaseColor", colour);
-            }
-            else
-            {
-                material.color = colour;
-            }
-
-            if (material.HasProperty("_Smoothness"))
-            {
-                material.SetFloat("_Smoothness", 0.42f);
+                Debug.LogError($"Missing packaged PVG material: Resources/{resourcePath}.mat");
             }
 
             return material;
@@ -132,27 +140,7 @@ namespace MineIT.CityBuilder.Bootstrap
             if (_cube != null)
             {
                 Destroy(_cube);
-            }
-
-            if (_buildingMaterials != null)
-            {
-                foreach (var material in _buildingMaterials)
-                {
-                    if (material != null)
-                    {
-                        Destroy(material);
-                    }
-                }
-            }
-
-            if (_accentMaterial != null)
-            {
-                Destroy(_accentMaterial);
-            }
-
-            if (_groundMaterial != null)
-            {
-                Destroy(_groundMaterial);
+                _cube = null;
             }
         }
     }
