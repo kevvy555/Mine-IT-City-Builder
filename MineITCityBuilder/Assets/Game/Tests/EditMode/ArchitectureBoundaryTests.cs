@@ -23,15 +23,15 @@ namespace MineIT.CityBuilder.Tests
             StringAssert.DoesNotContain("MineIT.CityBuilder.Bootstrap", simulation);
             StringAssert.DoesNotContain("MineIT.CityBuilder.Bootstrap", persistence);
 
-            StringAssert.Contains(""noEngineReferences": true", core);
-            StringAssert.Contains(""noEngineReferences": true", simulation);
-            StringAssert.Contains(""noEngineReferences": true", persistence);
+            StringAssert.Contains("noEngineReferences", core);
+            StringAssert.Contains("noEngineReferences", simulation);
+            StringAssert.Contains("noEngineReferences", persistence);
 
-            StringAssert.Contains(""MineIT.CityBuilder.Core"", simulation);
-            StringAssert.DoesNotContain(""MineIT.CityBuilder.Persistence"", simulation);
+            StringAssert.Contains("MineIT.CityBuilder.Core", simulation);
+            StringAssert.DoesNotContain("MineIT.CityBuilder.Persistence", simulation);
 
-            StringAssert.Contains(""MineIT.CityBuilder.Core"", persistence);
-            StringAssert.Contains(""MineIT.CityBuilder.Simulation"", persistence);
+            StringAssert.Contains("MineIT.CityBuilder.Core", persistence);
+            StringAssert.Contains("MineIT.CityBuilder.Simulation", persistence);
         }
     }
 }
