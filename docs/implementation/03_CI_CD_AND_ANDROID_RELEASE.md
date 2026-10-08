@@ -10,12 +10,12 @@ GitHub Actions is the authoritative automated build path.
 
 The first production CI workflow pins:
 
-- `game-ci/unity-builder@v5.0.0`;
+- `game-ci/cli@v0.1.72` for Android builds;
 - `game-ci/unity-test-runner@v4.4.0`;
 - `actions/checkout@v4`;
 - `actions/upload-artifact@v4`.
 
-The Unity workflow lives at `.github/workflows/unity-ci.yml`. Phase 1 executes jobs sequentially: configuration sanity -> EditMode tests -> Android APK build, so a failed test cannot publish a misleading build artifact.
+The Unity workflow lives at `.github/workflows/unity-ci.yml`. Phase 1 executes jobs sequentially: configuration sanity -> EditMode tests -> Android APK build, so a failed test cannot publish a misleading build artifact. The Android build uses the GameCI CLI directly because Unity 6 Personal entitlement-based activation works with account credentials while the legacy `unity-builder@v5` wrapper still requires a `.ulf` or serial during its preflight.
 
 ## Workflow set
 

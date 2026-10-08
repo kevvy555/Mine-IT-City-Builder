@@ -13,7 +13,7 @@
     "com.unity.test-framework": "1.6.0"
   },
   "ci": {
-    "unityBuilder": "game-ci/unity-builder@v5.0.0",
-    "unityTestRunner": "game-ci/unity-test-runner@v4.4.0"
+    "unityTestRunner": "game-ci/unity-test-runner@v4.4.0",
+    "gameCiCli": "game-ci/cli@v0.1.72"
   }
 }

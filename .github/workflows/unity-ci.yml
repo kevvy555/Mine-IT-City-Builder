@@ -126,18 +126,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install GameCI CLI
+        uses: game-ci/cli@v0.1.72
+
       - name: Build Android bootstrap APK
-        uses: game-ci/unity-builder@v5.0.0
+        shell: bash
         env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
-        with:
-          projectPath: MineITCityBuilder
-          unityVersion: 6000.3.25f1
-          targetPlatform: Android
-          buildMethod: MineIT.CityBuilder.Editor.BootstrapBuild.BuildAndroid
+          GAME_CI_UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          GAME_CI_UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        run: |
+          game-ci build MineITCityBuilder \
+            --engine unity \
+            --engine-version 6000.3.25f1 \
+            --target-platform Android \
+            --build-method MineIT.CityBuilder.Editor.BootstrapBuild.BuildAndroid
 
       - name: Upload versioned APK
         uses: actions/upload-artifact@v4
