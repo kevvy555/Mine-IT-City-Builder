@@ -4,7 +4,7 @@ Dedicated repository for the MineIT city-builder game set on Koplin 3, centred o
 
 ## Current phase
 
-The specification is complete and the project is currently in **detailed implementation planning**.
+The specification, implementation plan and QA plan are complete. **Phase 1 implementation — Unity + Android + GitHub Actions bootstrap — is in progress.**
 
 The full specification catalogue lives at:
 

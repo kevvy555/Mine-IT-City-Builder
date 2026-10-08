@@ -1,0 +1,21 @@
+{
+  "name": "MineIT.CityBuilder.Tests.Editor",
+  "rootNamespace": "MineIT.CityBuilder.Tests",
+  "references": [
+    "MineIT.CityBuilder.Bootstrap"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

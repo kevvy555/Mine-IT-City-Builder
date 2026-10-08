@@ -6,6 +6,17 @@ A developer or agent must be able to create code in GitHub, push a branch and ob
 
 GitHub Actions is the authoritative automated build path.
 
+## Resolved Phase 1 CI actions
+
+The first production CI workflow pins:
+
+- `game-ci/cli@v0.1.72` for Android builds;
+- `game-ci/unity-test-runner@v4.4.0`;
+- `actions/checkout@v4`;
+- `actions/upload-artifact@v4`.
+
+The Unity workflow lives at `.github/workflows/unity-ci.yml`. Phase 1 executes jobs sequentially: configuration sanity -> EditMode tests -> Android APK build, so a failed test cannot publish a misleading build artifact. The Android build uses the GameCI CLI directly because Unity 6 Personal entitlement-based activation works with account credentials while the legacy `unity-builder@v5` wrapper still requires a `.ulf` or serial during its preflight.
+
 ## Workflow set
 
 ### 1. pull-request.yml
