@@ -1,8 +1,9 @@
 # Gate A — Phase 2 Simulation Kernel Evidence
 
-**Status:** Candidate — automated Gate A tests pass; Android IL2CPP build pending  
+**Status:** Candidate — Gate A automated tests and Android IL2CPP build pass; PR integration pending  
 **Implementation branch:** `feature/phase-2-core-architecture`  
-**Tested code SHA:** `059e66234fa5b7acc123fca772022524728355ba`
+**Tested code SHA:** `059e66234fa5b7acc123fca772022524728355ba`  
+**Evidence update SHA:** branch head after this document update
 
 ## Implemented Gate A foundation
 
@@ -71,10 +72,19 @@ Gate A-specific passing cases include:
 | stable event order | scheduler order + save/reload event order |
 | rendering not required | headless test and dependency boundary test |
 
+## Android build evidence
+
+The same GitHub Actions run `37820338112` completed the Android IL2CPP build successfully after the 21/21 EditMode suite passed.
+
+Result:
+
+- Unity EditMode job: PASS;
+- Android APK job: PASS;
+- no required job failure on the tested code SHA.
+
 ## Remaining before PASS
 
-- Android IL2CPP build for the tested code SHA must complete successfully.
-- PR checks must be green.
+- PR-specific checks must be green for the integration head.
 - Final merge SHA must be recorded after integration.
 
 Phase 2 should not be declared complete until those remaining checks are closed.
