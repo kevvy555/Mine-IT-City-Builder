@@ -1,9 +1,11 @@
 # Gate A — Phase 2 Simulation Kernel Evidence
 
-**Status:** Candidate — Gate A automated tests and Android IL2CPP build pass; PR integration pending  
+**Status:** PASS  
 **Implementation branch:** `feature/phase-2-core-architecture`  
 **Tested code SHA:** `059e66234fa5b7acc123fca772022524728355ba`  
-**Evidence update SHA:** branch head after this document update
+**Integration PR:** #3  
+**Merged head:** `7876fce4f8b9e4211480a89aab519bf1ef926b04`  
+**Merge commit:** `15eeeade90bf80d6a1933e198a56f19cf7698ee1`
 
 ## Implemented Gate A foundation
 
@@ -82,9 +84,16 @@ Result:
 - Android APK job: PASS;
 - no required job failure on the tested code SHA.
 
-## Remaining before PASS
+## Final integration evidence
 
-- PR-specific checks must be green for the integration head.
-- Final merge SHA must be recorded after integration.
+PR #3 executed the required workflow on integration head `7876fce4f8b9e4211480a89aab519bf1ef926b04`.
 
-Phase 2 should not be declared complete until those remaining checks are closed.
+Result:
+
+- pinned Unity/project configuration: PASS;
+- Unity EditMode tests: PASS;
+- Android IL2CPP APK build: PASS;
+- PR state before merge: mergeable;
+- merge commit: `15eeeade90bf80d6a1933e198a56f19cf7698ee1`.
+
+**Gate A result: PASS. Phase 2 is complete.**
