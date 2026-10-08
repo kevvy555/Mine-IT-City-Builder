@@ -126,8 +126,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install GameCI CLI
-        uses: game-ci/cli@v0.1.72
+      - name: Install pinned GameCI CLI
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/game-ci/bin"
+          curl --fail --location --silent --show-error \
+            --output "$RUNNER_TEMP/game-ci/game-ci.tar.gz" \
+            "https://github.com/game-ci/cli/releases/download/v0.1.72/game-ci-linux-x64.tar.gz"
+          echo "1de550a620ee92e05e920b6db7d431621440b60b2577f04b4a997dc92a58cb0a  $RUNNER_TEMP/game-ci/game-ci.tar.gz" | sha256sum --check -
+          tar -xzf "$RUNNER_TEMP/game-ci/game-ci.tar.gz" -C "$RUNNER_TEMP/game-ci/bin"
+          chmod +x "$RUNNER_TEMP/game-ci/bin/game-ci"
+          echo "$RUNNER_TEMP/game-ci/bin" >> "$GITHUB_PATH"
 
       - name: Build Android bootstrap APK
         shell: bash
