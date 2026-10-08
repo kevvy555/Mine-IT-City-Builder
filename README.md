@@ -4,7 +4,7 @@ Dedicated repository for the MineIT city-builder game set on Koplin 3, centred o
 
 ## Current phase
 
-The specification, implementation plan and QA plan are complete. **Phase 1 is complete; Phase 2 — core architecture, deterministic simulation and save v1 — is in progress.**
+The specification, implementation plan and QA plan are complete. **Phases 1 and 2 are complete; Gate A has passed. Phase 3 — Universe import and canonical world — is next.**
 
 The full specification catalogue lives at:
 
