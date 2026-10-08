@@ -1,4 +1,4 @@
-using System;
+using MineIT.CityBuilder.Core.Ids;
 
 namespace MineIT.CityBuilder.Core.Determinism
 {

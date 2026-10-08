@@ -1,0 +1,17 @@
+{
+  "name": "MineIT.CityBuilder.Persistence",
+  "rootNamespace": "MineIT.CityBuilder",
+  "references": [
+    "MineIT.CityBuilder.Core",
+    "MineIT.CityBuilder.Simulation"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": true
+}

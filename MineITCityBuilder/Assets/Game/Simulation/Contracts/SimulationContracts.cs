@@ -1,4 +1,5 @@
 using MineIT.CityBuilder.Core.Determinism;
+using MineIT.CityBuilder.Simulation.Time;
 
 namespace MineIT.CityBuilder.Simulation.Contracts
 {
@@ -36,7 +37,7 @@ namespace MineIT.CityBuilder.Simulation.Contracts
     {
         SimulationPhase Phase { get; }
         int StableOrder { get; }
-        Time.SimulationCadence Cadence { get; }
+        SimulationCadence Cadence { get; }
         void Execute(in SimulationStepContext context);
     }
 

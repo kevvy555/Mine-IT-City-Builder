@@ -30,7 +30,7 @@ namespace MineIT.CityBuilder.Simulation.Time
             return true;
         }
 
-        internal void Restore(long minute, bool paused)
+        public void Restore(long minute, bool paused)
         {
             if (minute < 0)
             {

@@ -103,6 +103,20 @@ namespace MineIT.CityBuilder.Simulation.Scheduling
             return true;
         }
 
+        public void RestorePersistenceState(
+            long simulationMinute,
+            bool paused,
+            SimulationCommand[] commands,
+            ulong commandNextSequence,
+            ScheduledEvent[] events,
+            ulong eventNextSequence)
+        {
+            Clock.Restore(simulationMinute, paused);
+            Commands.Restore(commands, commandNextSequence);
+            Events.Restore(events, eventNextSequence);
+            DomainEvents.ClearConsumed();
+        }
+
         public SimulationReadModelSnapshot CreateReadModelSnapshot()
         {
             return new SimulationReadModelSnapshot(
