@@ -25,7 +25,7 @@ namespace MineIT.CityBuilder.Core.Ids
 
         public StableId(FixedString128Bytes value)
         {
-            if (value.IsEmpty)
+            if (value.Length == 0)
             {
                 throw new ArgumentException("Stable IDs cannot be empty.", nameof(value));
             }
