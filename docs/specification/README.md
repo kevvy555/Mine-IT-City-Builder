@@ -4,7 +4,7 @@
 **Working title:** Koplin City Builder  
 **Setting:** Koplin 3, primarily Concordia on the Zoran continent  
 **Canon baseline:** MineIT Universe plus the Koplin 3 canonical atlas  
-**Implementation status:** Phase 1 complete; Phase 2 core deterministic architecture in progress
+**Implementation status:** Phases 1 and 2 complete; Gate A passed; Phase 3 Universe import/canonical world next
 
 ## Purpose
 
