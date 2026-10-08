@@ -2,7 +2,10 @@
   "name": "MineIT.CityBuilder.Tests.Editor",
   "rootNamespace": "MineIT.CityBuilder.Tests",
   "references": [
-    "MineIT.CityBuilder.Bootstrap"
+    "MineIT.CityBuilder.Bootstrap",
+    "MineIT.CityBuilder.Core",
+    "MineIT.CityBuilder.Simulation",
+    "MineIT.CityBuilder.Persistence"
   ],
   "includePlatforms": [
     "Editor"
