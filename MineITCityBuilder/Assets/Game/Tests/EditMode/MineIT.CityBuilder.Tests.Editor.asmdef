@@ -4,6 +4,7 @@
   "references": [
     "MineIT.CityBuilder.Bootstrap",
     "MineIT.CityBuilder.Core",
+    "Unity.Collections",
     "MineIT.CityBuilder.Simulation",
     "MineIT.CityBuilder.Persistence"
   ],
