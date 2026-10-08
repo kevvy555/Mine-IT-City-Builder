@@ -1,7 +1,7 @@
 # MineIT City Builder — Implementation Plan
 
 **Plan version:** 0.1  
-**Status:** Phase 1 complete; Phase 2 core deterministic architecture in progress  
+**Status:** Phases 1 and 2 complete; Gate A passed; Phase 3 Universe import/canonical world next  
 **Target:** Android phones and tablets  
 **Engine:** Unity 6.3 LTS  
 **Primary architecture:** C# + Unity Entities/DOTS + Burst + Job System + URP  
