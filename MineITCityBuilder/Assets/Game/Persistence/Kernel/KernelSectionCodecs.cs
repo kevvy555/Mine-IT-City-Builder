@@ -60,7 +60,7 @@ namespace MineIT.CityBuilder.Persistence.Kernel
                 throw new System.IO.InvalidDataException("Allocator entry count is unreasonable.");
             }
 
-            var entries = new SaveEntityAllocatorEntry[count];
+            var entries = new SaveEntityAllocatorEntry[checked((int)count)];
             for (var i = 0; i < entries.Length; i++)
             {
                 entries[i] = new SaveEntityAllocatorEntry(
@@ -123,7 +123,7 @@ namespace MineIT.CityBuilder.Persistence.Kernel
             var commandNext = reader.ReadUInt64();
             var commandCount = reader.ReadUInt32();
             ValidateCount(commandCount, "commands");
-            var commands = new SimulationCommand[commandCount];
+            var commands = new SimulationCommand[checked((int)commandCount)];
             for (var i = 0; i < commands.Length; i++)
             {
                 commands[i] = new SimulationCommand(
@@ -137,7 +137,7 @@ namespace MineIT.CityBuilder.Persistence.Kernel
             var eventNext = reader.ReadUInt64();
             var eventCount = reader.ReadUInt32();
             ValidateCount(eventCount, "events");
-            var events = new ScheduledEvent[eventCount];
+            var events = new ScheduledEvent[checked((int)eventCount)];
             for (var i = 0; i < events.Length; i++)
             {
                 events[i] = new ScheduledEvent(
@@ -199,7 +199,7 @@ namespace MineIT.CityBuilder.Persistence.Kernel
                 throw new System.IO.InvalidDataException("Random stream count is unreasonable.");
             }
 
-            var states = new RandomStreamState[count];
+            var states = new RandomStreamState[checked((int)count)];
             for (var i = 0; i < states.Length; i++)
             {
                 states[i] = new RandomStreamState(
