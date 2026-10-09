@@ -19,12 +19,32 @@ namespace MineIT.CityBuilder.Editor
         public const string BuildInfoPath = "Assets/Game/Generated/Resources/build-info.json";
         public const string GeneratedResourcesRoot = "Assets/Game/Generated/Resources";
         public const string CanonProvenancePath = "Assets/Game/Generated/Resources/Canon/canon.provenance.json";
+        public const string DevSigningConfigRelativePath = "config/android-dev-signing.json";
+        public const string CiBuildContextRelativePath = "MineITCityBuilder/Library/MineIT/ci-build-context.json";
 
         [Serializable]
         private sealed class CanonBuildProvenance
         {
             public string universeCommit;
             public string contentHashSha256;
+        }
+
+        [Serializable]
+        private sealed class DevSigningConfig
+        {
+            public string purpose;
+            public string alias;
+            public string storePassword;
+            public string keyPassword;
+            public string sha256Fingerprint;
+            public string keystoreBase64;
+        }
+
+        [Serializable]
+        private sealed class CiBuildContext
+        {
+            public string runNumber;
+            public string gitSha;
         }
 
         [MenuItem("MineIT/Bootstrap/Configure Android Project")]
@@ -58,7 +78,7 @@ namespace MineIT.CityBuilder.Editor
             CreateBootstrapScene();
 
             AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+            AssetDatabase.Refresh();
 
             Debug.Log(
                 $"MineIT Android configured: min API 29, target API 36, ARM64/IL2CPP, " +
@@ -76,8 +96,11 @@ namespace MineIT.CityBuilder.Editor
                 throw new BuildFailedException("Could not switch to Android build target.");
             }
 
-            var runNumber = Environment.GetEnvironmentVariable("GITHUB_RUN_NUMBER") ?? "0";
-            PlayerSettings.bundleVersion = $"0.1.{runNumber}";
+            var buildContext = ResolveBuildContext();
+            var runNumber = buildContext.runNumber;
+            PlayerSettings.bundleVersion = runNumber == "local"
+                ? "0.1.local"
+                : $"0.1.{runNumber}";
 
             if (!int.TryParse(runNumber, out var versionCode) || versionCode <= 0)
             {
@@ -86,17 +109,18 @@ namespace MineIT.CityBuilder.Editor
 
             PlayerSettings.Android.bundleVersionCode = versionCode;
 
-            var repositoryRoot = Path.GetFullPath(Path.Combine(Application.dataPath, "..", ".."));
+            var repositoryRoot = RepositoryRoot();
+            ConfigureDevelopmentSigning(repositoryRoot);
+
             var outputDirectory = Path.Combine(repositoryRoot, "build", "Android");
             Directory.CreateDirectory(outputDirectory);
 
-            var shortSha = Environment.GetEnvironmentVariable("GITHUB_SHA");
-            shortSha = string.IsNullOrWhiteSpace(shortSha)
+            var shortSha = string.IsNullOrWhiteSpace(buildContext.gitSha)
                 ? "local"
-                : shortSha.Substring(0, Math.Min(8, shortSha.Length));
+                : buildContext.gitSha.Substring(0, Math.Min(8, buildContext.gitSha.Length));
             var outputPath = Path.Combine(
                 outputDirectory,
-                $"MineIT-City-Builder-0.1.{runNumber}-{shortSha}-dev.apk");
+                $"MineIT-City-Builder-{PlayerSettings.bundleVersion}-{shortSha}-dev.apk");
 
             var options = new BuildPlayerOptions
             {
@@ -224,13 +248,12 @@ namespace MineIT.CityBuilder.Editor
                 throw new BuildFailedException("Locked canon provenance is invalid.");
             }
 
-            var runNumber = Environment.GetEnvironmentVariable("GITHUB_RUN_NUMBER") ?? "local";
-            var sha = Environment.GetEnvironmentVariable("GITHUB_SHA") ?? "local";
+            var buildContext = ResolveBuildContext();
             var info = new BuildInfoData
             {
-                version = runNumber == "local" ? "0.1.local" : $"0.1.{runNumber}",
-                gitSha = sha,
-                runNumber = runNumber,
+                version = buildContext.runNumber == "local" ? "0.1.local" : $"0.1.{buildContext.runNumber}",
+                gitSha = buildContext.gitSha,
+                runNumber = buildContext.runNumber,
                 unityVersion = Application.unityVersion,
                 universeCommit = provenance.universeCommit,
                 canonContentHash = provenance.contentHashSha256,
@@ -238,6 +261,96 @@ namespace MineIT.CityBuilder.Editor
             };
 
             File.WriteAllText(BuildInfoPath, JsonUtility.ToJson(info, true));
+        }
+
+        private static void ConfigureDevelopmentSigning(string repositoryRoot)
+        {
+            var configPath = Path.Combine(repositoryRoot, DevSigningConfigRelativePath);
+            if (!File.Exists(configPath))
+            {
+                throw new BuildFailedException(
+                    $"Development signing config is missing: {configPath}");
+            }
+
+            var config = JsonUtility.FromJson<DevSigningConfig>(File.ReadAllText(configPath));
+            if (config == null ||
+                config.purpose != "development-only" ||
+                string.IsNullOrWhiteSpace(config.alias) ||
+                string.IsNullOrWhiteSpace(config.storePassword) ||
+                string.IsNullOrWhiteSpace(config.keyPassword) ||
+                string.IsNullOrWhiteSpace(config.keystoreBase64))
+            {
+                throw new BuildFailedException(
+                    "Development signing config is invalid or is not explicitly development-only.");
+            }
+
+            byte[] keystoreBytes;
+            try
+            {
+                keystoreBytes = Convert.FromBase64String(config.keystoreBase64);
+            }
+            catch (FormatException exception)
+            {
+                throw new BuildFailedException(
+                    $"Development signing keystore is not valid base64: {exception.Message}");
+            }
+
+            var keystorePath = Path.Combine(
+                repositoryRoot,
+                "MineITCityBuilder",
+                "Library",
+                "MineIT",
+                "mineit-ci-dev.keystore");
+            EnsureDirectory(Path.GetDirectoryName(keystorePath));
+            File.WriteAllBytes(keystorePath, keystoreBytes);
+
+            PlayerSettings.Android.useCustomKeystore = true;
+            PlayerSettings.Android.keystoreName = keystorePath;
+            PlayerSettings.Android.keystorePass = config.storePassword;
+            PlayerSettings.Android.keyaliasName = config.alias;
+            PlayerSettings.Android.keyaliasPass = config.keyPassword;
+
+            Debug.Log(
+                $"MineIT development APK signing enabled: alias={config.alias}, " +
+                $"SHA-256={config.sha256Fingerprint}. This key is development-only.");
+        }
+
+        private static CiBuildContext ResolveBuildContext()
+        {
+            var environmentRun = Environment.GetEnvironmentVariable("GITHUB_RUN_NUMBER");
+            var environmentSha = Environment.GetEnvironmentVariable("GITHUB_SHA");
+            if (!string.IsNullOrWhiteSpace(environmentRun) &&
+                !string.IsNullOrWhiteSpace(environmentSha))
+            {
+                return new CiBuildContext
+                {
+                    runNumber = environmentRun,
+                    gitSha = environmentSha
+                };
+            }
+
+            var contextPath = Path.Combine(RepositoryRoot(), CiBuildContextRelativePath);
+            if (File.Exists(contextPath))
+            {
+                var context = JsonUtility.FromJson<CiBuildContext>(File.ReadAllText(contextPath));
+                if (context != null &&
+                    !string.IsNullOrWhiteSpace(context.runNumber) &&
+                    !string.IsNullOrWhiteSpace(context.gitSha))
+                {
+                    return context;
+                }
+            }
+
+            return new CiBuildContext
+            {
+                runNumber = "local",
+                gitSha = "local"
+            };
+        }
+
+        private static string RepositoryRoot()
+        {
+            return Path.GetFullPath(Path.Combine(Application.dataPath, "..", ".."));
         }
 
         private static void EnsureDirectory(string path)
