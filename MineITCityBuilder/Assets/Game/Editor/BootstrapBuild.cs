@@ -18,6 +18,14 @@ namespace MineIT.CityBuilder.Editor
         public const string PipelineAssetPath = "Assets/Game/Generated/Settings/MineIT_URP.asset";
         public const string BuildInfoPath = "Assets/Game/Generated/Resources/build-info.json";
         public const string GeneratedResourcesRoot = "Assets/Game/Generated/Resources";
+        public const string CanonProvenancePath = "Assets/Game/Generated/Resources/Canon/canon.provenance.json";
+
+        [Serializable]
+        private sealed class CanonBuildProvenance
+        {
+            public string universeCommit;
+            public string contentHashSha256;
+        }
 
         [MenuItem("MineIT/Bootstrap/Configure Android Project")]
         public static void ConfigureProject()
@@ -201,6 +209,21 @@ namespace MineIT.CityBuilder.Editor
         {
             EnsureDirectory(Path.GetDirectoryName(BuildInfoPath));
 
+            if (!File.Exists(CanonProvenancePath))
+            {
+                throw new BuildFailedException(
+                    $"Locked canon provenance is missing: {CanonProvenancePath}. Run the Universe importer first.");
+            }
+
+            var provenance = JsonUtility.FromJson<CanonBuildProvenance>(
+                File.ReadAllText(CanonProvenancePath));
+            if (provenance == null ||
+                string.IsNullOrWhiteSpace(provenance.universeCommit) ||
+                string.IsNullOrWhiteSpace(provenance.contentHashSha256))
+            {
+                throw new BuildFailedException("Locked canon provenance is invalid.");
+            }
+
             var runNumber = Environment.GetEnvironmentVariable("GITHUB_RUN_NUMBER") ?? "local";
             var sha = Environment.GetEnvironmentVariable("GITHUB_SHA") ?? "local";
             var info = new BuildInfoData
@@ -209,6 +232,8 @@ namespace MineIT.CityBuilder.Editor
                 gitSha = sha,
                 runNumber = runNumber,
                 unityVersion = Application.unityVersion,
+                universeCommit = provenance.universeCommit,
+                canonContentHash = provenance.contentHashSha256,
                 createdUtc = DateTime.UtcNow.ToString("O")
             };
 

@@ -10,6 +10,8 @@ namespace MineIT.CityBuilder.Bootstrap
         public string gitSha;
         public string runNumber;
         public string unityVersion;
+        public string universeCommit;
+        public string canonContentHash;
         public string createdUtc;
     }
 
@@ -38,6 +40,8 @@ namespace MineIT.CityBuilder.Bootstrap
                     gitSha = "local",
                     runNumber = "local",
                     unityVersion = Application.unityVersion,
+                    universeCommit = "unknown",
+                    canonContentHash = "unknown",
                     createdUtc = "runtime"
                 };
 
