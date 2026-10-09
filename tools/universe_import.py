@@ -403,14 +403,28 @@ def run_import(source: Path, output: Path, lock_path: Path, config_path: Path, v
     atlas_bytes = write_canonical_json(output / "atlas.index.json", atlas_index)
     content_hash = hashlib.sha256(catalog_bytes + atlas_bytes).hexdigest()
 
-    imported_ids = sorted(
-        {
-            str(x["id"])
-            for name, records in collections.items()
-            for x in records
-            if name in config["requiredIds"] or name in ("worldAtlasTiles",)
-        }
+    imported_id_set = {
+        stable_id
+        for ids in config["requiredIds"].values()
+        for stable_id in ids
+    }
+    imported_id_set.update(str(tile["id"]) for tile in atlas_tiles)
+
+    planet_reference_fields = (
+        ("celestialBodyKinds", [planet.get("celestialBodyKindId")]),
+        ("worldTypes", [planet.get("worldTypeId")]),
+        ("atmosphereTypes", [planet.get("atmosphereTypeId")]),
+        ("surfaceLandforms", planet.get("dominantLandformIds", [])),
+        ("surfaceBiomes", planet.get("dominantBiomeIds", [])),
+        ("surfaceHydrospheres", planet.get("dominantHydrosphereIds", [])),
+        ("landscapeTilesets", [planet.get("landscapeTilesetId")]),
     )
+    for _, values in planet_reference_fields:
+        imported_id_set.update(
+            str(value) for value in values if isinstance(value, str) and value
+        )
+
+    imported_ids = sorted(imported_id_set)
     generated_images = sum(1 for tile in atlas_tiles if (tile.get("image") or {}).get("generated"))
     provenance = {
         "formatVersion": 1,
