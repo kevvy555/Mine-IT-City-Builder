@@ -106,7 +106,18 @@ Implementation must document the exact current GameCI method during Phase 1 beca
 
 ## Android signing
 
-Development builds may use a CI-managed development keystore.
+Development APKs use one stable, project-owned **development-only** signing identity defined by `config/android-dev-signing.json`.
+
+The development signing identity is deliberately not treated as a secret: it exists only so APKs built by different GitHub runners have the same certificate and can update one another during testing. Current alias/fingerprint:
+
+- alias: `mineit-dev`;
+- SHA-256: `F9:F5:6A:F8:5C:06:27:FA:C3:99:AE:16:FC:C4:4C:D3:14:33:F4:EE:C5:DC:8F:70:F7:84:65:F4:8E:FB:BE:9E`.
+
+CI verifies the produced APK certificate with Android `apksigner` before uploading the artifact. A mismatched or unsigned APK fails the job.
+
+**Transition rule:** APKs produced before stable development signing used transient runner/debug identities. A tester may need to uninstall one old APK once. After installing the first stable-signed development APK, subsequent development APKs with the same package ID and non-decreasing version code must install as updates.
+
+The development key must never be used for Play Store or production release signing.
 
 Release signing secrets:
 
@@ -130,21 +141,40 @@ When Play deployment is enabled:
 - promotion to closed/open/production track is an explicit action;
 - production promotion is never automatic from ordinary merge.
 
-## Caching
+## Caching and build-time optimisation
 
-Cache:
+The initial cold Unity 6.3 Android pipeline was intentionally simple and therefore expensive. Measured Phase 3 cold evidence:
 
-- Unity Library where safe;
-- package downloads;
-- Gradle dependencies.
+- EditMode Unity execution: about 4 minutes 15 seconds;
+- Android job: about 30 minutes wall-clock;
+- Unity `BuildPipeline.BuildPlayer` portion: 23 minutes 51 seconds.
 
-Cache key includes:
+The major cost is Unity import/IL2CPP/Bee work on an ephemeral runner, not Git checkout or the Universe import.
 
+The workflow now caches, separately for EditMode and Android:
+
+- `MineITCityBuilder/Library`;
+- `MineITCityBuilder/Assets/Game/Generated` so generated assets can retain stable Unity metadata across warm builds while their content is deterministically overwritten.
+
+Cache identity includes:
+
+- OS;
 - Unity version;
-- package-lock hash;
-- project settings hash where relevant.
+- package/project settings hash;
+- Universe lock hash;
+- current commit as the exact key with a compatible-prefix restore fallback.
 
-Never cache generated canonical runtime data without including Universe lock SHA and importer version.
+This allows a changed commit to restore the most recent compatible Unity state and incrementally rebuild it. The first cache-enabled run remains effectively cold; later compatible runs are the useful comparison.
+
+Do not use `AssetDatabase.Refresh(ForceUpdate)` in the normal build path unless a defect proves it necessary; forcing all imported assets to refresh defeats the cache.
+
+Further optimisation, if required after measuring warm-cache results:
+
+- split Android APK builds from every development push and run them only for phase candidates/PRs/manual requests;
+- persist or cache additional Gradle/Unity package state where GameCI exposes it safely;
+- consider a persistent/self-hosted Android Unity runner only if hosted-cache performance remains unacceptable.
+
+Never trade deterministic/reproducible build correctness for speed.
 
 ## Artefacts
 

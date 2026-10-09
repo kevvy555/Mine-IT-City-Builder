@@ -1,7 +1,9 @@
 # Phase 3 — Android UI Device Acceptance
 
-**Status:** REQUIRED — pending re-test after UI Toolkit runtime-theme fix  
-**Branch:** `feature/phase-3-universe-canonical-world`
+**Status:** PASS — physical Android rendered-UI re-test accepted  
+**Branch:** `feature/phase-3-universe-canonical-world`  
+**Accepted executable SHA:** `cad0d1c75af70680189cdae1caf85b83dd6feb3f`  
+**Acceptance date:** 2026-10-09
 
 ## Why this gate exists
 
@@ -33,3 +35,27 @@ Before Phase 3 is merged, a tester must confirm on the replacement Android APK:
 - no development-console exception overlay appears.
 
 A successful CI build alone does not close this gate.
+
+
+## Accepted physical-device evidence
+
+The replacement APK was installed and tested on a physical Android device after the runtime-theme fix.
+
+Observed PASS:
+
+- title `MINEIT // CONCORDIA BOOTSTRAP` visibly renders;
+- build/version row visibly renders;
+- canonical row visibly shows `Koplin 3 / Concordia / Federal Forum (0,0)`;
+- atlas row shows 100 tiles and 16 origin chunks;
+- Universe/canon hash row visibly renders;
+- ECS/Burst/PVG metrics visibly render;
+- lifecycle/FPS/control guidance visibly renders;
+- `RESET CITY VIEW` button visibly renders;
+- city scene remains visible behind the UI;
+- tester reported the replacement test as good.
+
+The screenshot supplied during acceptance is the human-rendered proof that the blank-panel defect is fixed.
+
+## Follow-up build-pipeline acceptance
+
+Stable development signing and build-cache hardening were added after this visual acceptance. Those changes do not alter the UI layout, but the first stable-signed APK still requires an install/update smoke test before Phase 3 integration closes.

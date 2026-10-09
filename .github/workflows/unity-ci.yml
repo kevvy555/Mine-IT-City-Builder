@@ -87,6 +87,22 @@ jobs:
           if len(universe_lock.get("commit", "")) != 40:
               raise SystemExit("Universe lock must pin an exact 40-character SHA.")
 
+          import base64
+          signing = json.loads((root / "config/android-dev-signing.json").read_text())
+          if signing.get("purpose") != "development-only":
+              raise SystemExit("Android development signing config must be explicitly development-only.")
+          if signing.get("alias") != "mineit-dev":
+              raise SystemExit("Unexpected Android development signing alias.")
+          fingerprint = signing.get("sha256Fingerprint", "")
+          if len(fingerprint.replace(":", "")) != 64:
+              raise SystemExit("Android development signing SHA-256 fingerprint is malformed.")
+          try:
+              keystore = base64.b64decode(signing["keystoreBase64"], validate=True)
+          except Exception as exc:
+              raise SystemExit(f"Android development keystore base64 is invalid: {exc}")
+          if len(keystore) < 1024:
+              raise SystemExit("Android development keystore payload is unexpectedly small.")
+
           print(
               f"Unity {expected_unity} and Universe {universe_lock['commit']} locks are structurally valid."
           )
