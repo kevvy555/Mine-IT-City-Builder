@@ -308,6 +308,36 @@ At minimum, preserve or extend tests for:
 
 Use the benchmark and fixture scenarios defined by the specification rather than relying only on hand-played happy paths.
 
+## Rendered UI acceptance
+
+Every implementation phase must have an explicit UI test plan, including phases whose intended work is simulation, persistence, data import or other non-presentation infrastructure.
+
+Use `docs/qa/14_RENDERED_UI_PHASE_ACCEPTANCE.md` as the mandatory rendered-UI acceptance contract.
+
+Before claiming a phase complete:
+
+1. declare its UI impact level (`UI-0` through `UI-4`);
+2. identify affected screens, panels, overlays or state that should remain unchanged;
+3. execute the required automated UI/resource/layout checks;
+4. execute physical Android rendered-UI acceptance for `UI-1+` phases;
+5. execute physical touch/interaction acceptance for `UI-2+` phases;
+6. retain screenshot/video evidence where required;
+7. record the UI result in the phase evidence/handover.
+
+`UI-0` means “no intended UI change,” not “skip UI QA.” It still requires regression proof that the existing shell renders correctly.
+
+Do not equate any of the following with rendered UI acceptance:
+
+- Unity compilation;
+- an APK being produced;
+- a `UIDocument`, `Label` or `Button` existing in the hierarchy;
+- text strings being non-empty in memory;
+- the application process starting successfully.
+
+A phase with a known blank, missing, clipped, unthemed, unreadable or unusable critical UI surface is not complete.
+
+When physical-device testing exposes a UI defect missed by automation, add a regression test where practical and update the QA process if the gap is systemic.
+
 ## Accessibility
 
 Accessibility is a core requirement, not a late polish phase.
