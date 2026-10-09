@@ -4,12 +4,14 @@
 
 ### Every PR
 
+- phase UI impact declaration (UI-0..UI-4) and linked `QA-UI-*` cases;
 - requirement coverage for changed KCB/IMP;
 - unit tests;
 - invariants relevant to change;
 - deterministic short fixture;
 - content validation;
-- compilation.
+- compilation;
+- rendered-UI structural/resource checks when presentation is touched.
 
 ### Domain integration PR
 
@@ -30,6 +32,7 @@ Add:
 ### Milestone
 
 - full gate-specific QA;
+- physical Android rendered-UI acceptance for all UI-1+ work since the previous milestone;
 - B50K or B250K where required;
 - physical Android;
 - manual UX/accessibility;
@@ -63,6 +66,9 @@ duration
 result
 metrics
 artifacts
+uiImpactLevel
+screensChecked
+screenshots
 notes
 ```
 
@@ -139,7 +145,9 @@ Rules:
 
 Manual runs use checklists with pass/fail evidence.
 
-“Tester played for a while” is not sufficient acceptance evidence.
+For UI-1+ phases, physical Android rendered-UI acceptance follows `14_RENDERED_UI_PHASE_ACCEPTANCE.md` and records the exact build/device plus screenshots where required.
+
+“Tester played for a while” and “APK boots” are not sufficient acceptance evidence.
 
 ## Reproduction bundles
 
