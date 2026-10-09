@@ -7,6 +7,7 @@ namespace MineIT.CityBuilder.Bootstrap
     public sealed class BootstrapUi : MonoBehaviour
     {
         private Label _build;
+        private Label _canon;
         private Label _metrics;
         private Label _lifecycle;
         private Label _fps;
@@ -34,7 +35,7 @@ namespace MineIT.CityBuilder.Bootstrap
             card.style.position = Position.Absolute;
             card.style.left = 22;
             card.style.top = 22;
-            card.style.width = 510;
+            card.style.width = 610;
             card.style.paddingLeft = 18;
             card.style.paddingRight = 18;
             card.style.paddingTop = 14;
@@ -54,6 +55,7 @@ namespace MineIT.CityBuilder.Bootstrap
             card.Add(title);
 
             _build = CreateLabel(card, 16, new Color(0.78f, 0.86f, 0.90f));
+            _canon = CreateLabel(card, 15, new Color(0.70f, 0.90f, 0.76f));
             _metrics = CreateLabel(card, 16, Color.white);
             _lifecycle = CreateLabel(card, 15, new Color(0.60f, 0.76f, 0.84f));
             _fps = CreateLabel(card, 15, new Color(0.60f, 0.76f, 0.84f));
@@ -72,7 +74,32 @@ namespace MineIT.CityBuilder.Bootstrap
                 ? "unknown"
                 : info.gitSha.Substring(0, Mathf.Min(8, info.gitSha.Length));
             _build.text = $"v{info.version} • Unity {Application.unityVersion} • {shortSha} • run {info.runNumber}";
+            _canon.text = "Canon: loading locked Universe snapshot…";
             _lifecycle.text = "Application: active";
+        }
+
+        public void SetCanonStatus(
+            string planet,
+            string settlement,
+            string district,
+            string coordinate,
+            int chunkCount,
+            int tileCount,
+            int generatedImages,
+            int pendingImages,
+            string universeSha,
+            string contentHash)
+        {
+            _canon.text =
+                $"CANON ✓ {planet} / {settlement} / {district} {coordinate}\n" +
+                $"Atlas: {tileCount} tiles • origin chunks: {chunkCount} • art {generatedImages}/{tileCount}\n" +
+                $"Universe {universeSha} • canon hash {contentHash}";
+        }
+
+        public void SetCanonError(string message)
+        {
+            _canon.style.color = new Color(1f, 0.42f, 0.32f);
+            _canon.text = $"CANON ERROR: {message}";
         }
 
         public void SetMetrics(int ecsAgents, uint simulationTicks, int renderInstances)

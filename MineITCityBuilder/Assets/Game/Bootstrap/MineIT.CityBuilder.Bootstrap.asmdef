@@ -2,6 +2,8 @@
   "name": "MineIT.CityBuilder.Bootstrap",
   "rootNamespace": "MineIT.CityBuilder",
   "references": [
+    "MineIT.CityBuilder.Content",
+    "MineIT.CityBuilder.World",
     "Unity.Burst",
     "Unity.Collections",
     "Unity.Entities",

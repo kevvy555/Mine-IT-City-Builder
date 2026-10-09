@@ -1,3 +1,7 @@
+using System;
+using MineIT.CityBuilder.Content;
+using MineIT.CityBuilder.World.Atlas;
+using MineIT.CityBuilder.World.Chunks;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
@@ -6,13 +10,14 @@ namespace MineIT.CityBuilder.Bootstrap
 {
     public sealed class BootstrapApp : MonoBehaviour
     {
-        private World _world;
+        private Unity.Entities.World _world;
         private EntityManager _entityManager;
         private EntityQuery _agentQuery;
         private EntityQuery _counterQuery;
         private PrimitiveCityRenderer _renderer;
         private TouchOrbitCamera _cameraController;
         private BootstrapUi _ui;
+        private ChunkRegistry _chunkRegistry;
         private bool _paused;
         private bool _focused = true;
         private float _nextMetricsUpdate;
@@ -24,6 +29,7 @@ namespace MineIT.CityBuilder.Bootstrap
             QualitySettings.vSyncCount = 0;
 
             CreatePresentation();
+            LoadCanonicalWorld();
             CreateBootstrapEntities();
         }
 
@@ -58,9 +64,37 @@ namespace MineIT.CityBuilder.Bootstrap
             _ui.Initialise(() => _cameraController.ResetView());
         }
 
+        private void LoadCanonicalWorld()
+        {
+            try
+            {
+                var canon = RuntimeCanonCatalog.LoadRequired();
+                var origin = canon.Atlas.GetRequiredTile(new AtlasCoordinate(0, 0));
+                _chunkRegistry = new ChunkRegistry();
+                var chunks = _chunkRegistry.MaterialiseTile(origin);
+
+                _ui.SetCanonStatus(
+                    canon.PlanetName,
+                    canon.SettlementName,
+                    origin.DistrictName,
+                    origin.Coordinate.ToString(),
+                    chunks.Length,
+                    canon.Atlas.Tiles.Length,
+                    canon.GeneratedAtlasImages,
+                    canon.PendingAtlasImages,
+                    Short(canon.UniverseCommit),
+                    Short(canon.ContentHashSha256));
+            }
+            catch (Exception exception)
+            {
+                Debug.LogError($"Canonical world bootstrap failed: {exception}");
+                _ui.SetCanonError(exception.Message);
+            }
+        }
+
         private void CreateBootstrapEntities()
         {
-            var world = World.DefaultGameObjectInjectionWorld;
+            var world = Unity.Entities.World.DefaultGameObjectInjectionWorld;
             if (world == null || !world.IsCreated)
             {
                 Debug.LogError("DOTS default world was not created.");
@@ -119,6 +153,16 @@ namespace MineIT.CityBuilder.Bootstrap
             }
 
             _queriesReady = false;
+        }
+
+        private static string Short(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return "unknown";
+            }
+
+            return value.Substring(0, Mathf.Min(8, value.Length));
         }
     }
 }
