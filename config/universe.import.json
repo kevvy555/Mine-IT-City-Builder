@@ -1,0 +1,14 @@
+{
+  "requiredIds": {
+    "planets": ["planet-koplin-prime"],
+    "settlements": ["settlement-concordia"],
+    "species": ["species-trondonian", "species-zoran", "species-blaxmar"],
+    "organisations": ["organisation-koplin-compact"],
+    "currencies": ["currency-commonwealth-credit"],
+    "worldAtlases": ["world-atlas-koplin-3"]
+  },
+  "atlasId": "world-atlas-koplin-3",
+  "planetId": "planet-koplin-prime",
+  "settlementId": "settlement-concordia",
+  "expectedAtlasTileCount": 100
+}
