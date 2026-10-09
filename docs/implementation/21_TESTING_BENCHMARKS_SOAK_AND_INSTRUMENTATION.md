@@ -15,6 +15,7 @@ Implementation tests created here must execute the QA cases defined there. In pa
 - save/determinism acceptance comes from `docs/qa/08_SAVE_MIGRATION_AND_DETERMINISM.md`;
 - Android performance acceptance comes from `docs/qa/09_ANDROID_PERFORMANCE_AND_DEVICE_QA.md`;
 - UX/accessibility acceptance comes from `docs/qa/10_MOBILE_UX_ACCESSIBILITY_AND_EXPLAINABILITY.md`;
+- rendered UI phase acceptance comes from `docs/qa/14_RENDERED_UI_PHASE_ACCEPTANCE.md`;
 - long-run acceptance comes from `docs/qa/11_LONG_RUN_STABILITY_AND_BALANCE.md`.
 
 A test harness capability without a linked QA acceptance case does not by itself prove a KCB requirement.
@@ -48,6 +49,17 @@ Load deterministic synthetic/canonical fixtures and assert metric ranges/invaria
 ### Android smoke
 
 Build/install/start/load basic scene and exercise lifecycle.
+
+For any phase classified UI-1 or higher, Android smoke also verifies rendered UI, not merely process startup:
+
+- required text glyphs are visible;
+- buttons/controls visibly render;
+- runtime theme/font assets are present;
+- safe-area/layout is valid;
+- no blank panel or exception overlay appears;
+- representative screenshot evidence is retained.
+
+The mandatory per-phase procedure is defined in `docs/qa/14_RENDERED_UI_PHASE_ACCEPTANCE.md`.
 
 ### Long-run headless
 
