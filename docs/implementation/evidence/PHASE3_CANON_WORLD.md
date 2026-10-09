@@ -1,6 +1,6 @@
 # Phase 3 — Canonical Universe and World Evidence
 
-**Status:** Candidate — canon validation and Unity tests pass; Android integration build in progress  
+**Status:** Candidate — canon/Unity/Android build pass; physical rendered-UI acceptance FAILED on first candidate and re-test is required  
 **Implementation branch:** `feature/phase-3-universe-canonical-world`  
 **Tested executable SHA:** `a20a8f1e8ed9537710d255de9b332bc801799aa1`  
 **Locked Universe SHA:** `2a3251ba439a2108f0bf03e46eda02343e518925`
@@ -119,8 +119,32 @@ Phase 3-specific cases cover:
 
 QA coverage: `QA-CAN-001`, `QA-CAN-002`, `QA-CAN-006`, plus deterministic importer validation.
 
+## Rendered UI acceptance defect
+
+The first physical Android Phase 3 candidate booted and rendered the 3D city, but the top-left diagnostic/canon card was blank.
+
+Observed:
+- card background rendered;
+- labels/button content did not render;
+- pan/zoom/rotate continued to work.
+
+This means the executable passed data, hierarchy and packaging tests but failed rendered-UI acceptance.
+
+Root cause identified:
+- runtime-created UI Toolkit `PanelSettings` did not reference a packaged runtime `ThemeStyleSheet`;
+- the plain card background could render while text/control styling/font resources were unavailable.
+
+Regression/process response:
+- packaged runtime theme added;
+- automated theme/content contract added;
+- `docs/qa/14_RENDERED_UI_PHASE_ACCEPTANCE.md` added;
+- every implementation phase now has an explicit UI plan;
+- physical Android rendered acceptance is mandatory for UI-1+ phases.
+
+See `PHASE3_UI_DEVICE_ACCEPTANCE.md`.
+
 ## Remaining before Phase 3 PASS
 
-- Android IL2CPP build must pass on the tested executable SHA.
-- PR-specific exact-head checks must pass.
-- Merge SHA must be recorded after integration.
+- replacement APK must pass the Phase 3 physical rendered-UI checklist;
+- PR-specific exact-head checks must pass;
+- merge SHA must be recorded after integration.
