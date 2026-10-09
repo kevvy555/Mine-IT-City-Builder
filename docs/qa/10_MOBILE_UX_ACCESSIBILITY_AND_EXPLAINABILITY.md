@@ -4,6 +4,18 @@
 
 Prove the game can actually be controlled, understood and diagnosed on a phone.
 
+## Relationship to rendered UI acceptance
+
+This document tests whether the UI is understandable, usable and accessible.
+
+Rendered presence is tested separately by [14_RENDERED_UI_PHASE_ACCEPTANCE.md](14_RENDERED_UI_PHASE_ACCEPTANCE.md). Both must pass where applicable:
+
+- a control can exist in the hierarchy yet fail to render;
+- text can exist yet be clipped, transparent, unthemed or missing a runtime font;
+- an automated logic test cannot substitute for physical Android visual acceptance.
+
+Every phase uses the UI impact level and phase matrix from the rendered-UI plan in addition to the task-based UX cases below.
+
 ## Core task-based UX tests
 
 ### QA-UX-001 — Navigate and inspect
