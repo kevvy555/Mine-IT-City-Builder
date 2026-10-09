@@ -18,6 +18,15 @@ namespace MineIT.CityBuilder.Bootstrap
             var document = gameObject.AddComponent<UIDocument>();
             var panelSettings = ScriptableObject.CreateInstance<PanelSettings>();
             panelSettings.name = "MineIT Bootstrap Panel";
+
+            var runtimeTheme = Resources.Load<ThemeStyleSheet>("bootstrap-runtime-theme");
+            if (runtimeTheme == null)
+            {
+                throw new InvalidOperationException(
+                    "MineIT bootstrap runtime UI theme is missing from Resources.");
+            }
+
+            panelSettings.themeStyleSheet = runtimeTheme;
             panelSettings.scaleMode = PanelScaleMode.ScaleWithScreenSize;
             panelSettings.referenceResolution = new Vector2Int(1920, 1080);
             panelSettings.screenMatchMode = PanelScreenMatchMode.MatchWidthOrHeight;
@@ -68,6 +77,12 @@ namespace MineIT.CityBuilder.Bootstrap
             reset.style.marginTop = 10;
             reset.style.fontSize = 15;
             card.Add(reset);
+
+            if (card.childCount < 8)
+            {
+                throw new InvalidOperationException(
+                    "MineIT bootstrap UI hierarchy was not constructed correctly.");
+            }
 
             var info = BuildInfo.Current;
             var shortSha = string.IsNullOrWhiteSpace(info.gitSha)
