@@ -3,7 +3,8 @@
   "rootNamespace": "MineIT.CityBuilder",
   "references": [
     "MineIT.CityBuilder.Core",
-    "MineIT.CityBuilder.World"
+    "MineIT.CityBuilder.World",
+    "Unity.Collections"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],
