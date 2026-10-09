@@ -24,7 +24,7 @@ The implementation plan and QA plan are complementary:
 - `docs/implementation/` defines **how it will be built**;
 - `docs/qa/` defines **how we prove the implementation matches the specification**.
 
-Every implementation phase must identify the QA IDs, fixtures, invariants, benchmarks and manual acceptance checks that will verify its KCB requirements. A feature is not complete when code merely exists; it is complete only when its required QA evidence passes.
+Every implementation phase must identify the QA IDs, fixtures, invariants, benchmarks and manual acceptance checks that will verify its KCB requirements. Every phase must also declare and execute a UI impact plan from `docs/qa/14_RENDERED_UI_PHASE_ACCEPTANCE.md`, including UI-0 phases where no presentation change is intended. A feature is not complete when code merely exists; it is complete only when its required QA evidence passes.
 
 The existing testing/benchmark implementation document defines the test infrastructure and execution machinery. The QA catalogue defines the behavioural acceptance oracle and final specification sign-off.
 
