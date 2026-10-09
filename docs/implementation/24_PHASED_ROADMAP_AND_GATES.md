@@ -20,6 +20,46 @@ Each implementation phase must:
 
 QA is executed continuously through the phases and comprehensively again at the final **Gate QA — Specification Acceptance**.
 
+## UI execution rule
+
+Rendered UI acceptance is mandatory in every phase and is defined by [docs/qa/14_RENDERED_UI_PHASE_ACCEPTANCE.md](../qa/14_RENDERED_UI_PHASE_ACCEPTANCE.md).
+
+Each phase must declare one UI impact level before implementation closes:
+
+- **UI-0** — no intended presentation change; existing shell still receives regression smoke;
+- **UI-1** — read-only/diagnostic UI;
+- **UI-2** — interactive UI;
+- **UI-3** — gameplay-critical visualisation;
+- **UI-4** — production accessibility/localisation UI.
+
+A phase evidence record must contain the UI plan and result. “No UI work” is not permission to omit UI testing.
+
+### Per-phase UI plan
+
+| Phase | Level | Required UI acceptance |
+|---|---:|---|
+| 0 | UI-0 | Verify roadmap/QA assigns a UI plan to every phase. |
+| 1 | UI-2 | Diagnostic card/build text/reset button plus physical touch pan/zoom/rotate and screenshot. |
+| 2 | UI-0 | Existing shell remains visible/usable on Android; no presentation regression. |
+| 3 | UI-1 | Koplin 3 / Concordia / Federal Forum canon panel visibly renders on physical Android. |
+| 4 | UI-3 | Federal Forum render, camera/touch, selection/context shell and HUD rendered on Android. |
+| 5 | UI-2 | Road spline tool, handles, valid/invalid preview, confirm/cancel on touch device. |
+| 6 | UI-3 | Blocks/parcels/zoning/building states and construction feedback visibly distinguishable. |
+| 7 | UI-2 | Household/dwelling/job/education inspection surfaces, including empty/error states. |
+| 8 | UI-3 | Traffic/transit/route overlays and congestion states on Android. |
+| 9 | UI-3 | Power/service overlays and authoritative cause traces including failure/recovery. |
+| 10 | UI-3 | Economy/affordability/inventory/freight UI including shortage and large-value states. |
+| 11 | UI-4 | Dashboard/charts/alerts/search/save UI plus scaling, pseudo-localisation and accessibility checks. |
+| 12 | UI-4 | End-to-end Federal Forum mobile flow, canonical visual identity and device capture/video. |
+| 13 | UI-3 | Weather/pollution/flood/incident/service overlays and warning states. |
+| 14 | UI-3 | Policy/mandate/research/event/news UI including locked/unavailable/decision states. |
+| 15 | UI-3 | Multi-tile transitions, district/selection continuity and HLOD/proxy UI continuity. |
+| 16 | UI-3 | HUD/interaction responsiveness at B250K and visible backlog/thermal reporting. |
+| 17 | UI-4 | Full scaling, TalkBack/focus, contrast, localisation, captions and settings acceptance. |
+| 18 | UI-4 | Representative 100 km² visual captures, landmark/district consistency and selection regression. |
+| 19 | UI-4 | Long-save/large-value/migration UI integrity plus full accessibility regression. |
+| 20 | UI-4 | Supported-device visual matrix, clean/upgrade install and release UI acceptance. |
+
 ## Phase 0 — Planning integration
 
 Scope:
