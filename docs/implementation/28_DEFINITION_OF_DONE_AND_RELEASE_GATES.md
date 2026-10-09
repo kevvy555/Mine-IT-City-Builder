@@ -47,6 +47,17 @@ A feature/task is **Complete** only when all applicable items are true.
 - benchmark updated if hot path changed;
 - mobile-specific impact assessed.
 
+### Rendered UI
+
+- phase declares UI impact level UI-0..UI-4;
+- affected screens/panels/overlays are listed;
+- required `QA-UI-*` checks from `docs/qa/14_RENDERED_UI_PHASE_ACCEPTANCE.md` pass;
+- runtime theme/font/resources required by the player build are packaged and validated;
+- UI-1+ work has physical Android rendered evidence before phase close;
+- UI-2+ work has physical touch/interaction evidence;
+- UI-0 work still passes the current shell regression;
+- no blank, missing, clipped or exception-covered critical UI remains.
+
 ### Accessibility/localisation
 
 - touch target/interaction works;
@@ -68,7 +79,8 @@ A feature/task is **Complete** only when all applicable items are true.
 - integration fixture if cross-domain;
 - invariant updated;
 - deterministic reference updated intentionally;
-- Android smoke if platform/presentation affected.
+- Android smoke if platform/presentation affected;
+- rendered-UI regression at the phase's declared UI impact level.
 
 ### Documentation
 
@@ -87,7 +99,8 @@ PR body includes:
 - testing and QA IDs/evidence;
 - benchmark/performance;
 - save compatibility;
-- screenshots/video when visual;
+- UI impact level and UI test plan/result;
+- screenshots/video when UI-1+ or otherwise visual;
 - known deferred items.
 
 Required checks green.
@@ -101,7 +114,7 @@ Store:
 - benchmark report;
 - test report;
 - device model/OS for Android proof;
-- screenshots where visual;
+- screenshots where visual or required by the phase UI plan;
 - acceptance checklist.
 
 ## Gate A — Simulation kernel
