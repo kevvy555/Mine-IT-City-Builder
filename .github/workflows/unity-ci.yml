@@ -10,6 +10,11 @@ on:
     paths:
       - 'MineITCityBuilder/**'
       - 'config/unity.lock.json'
+      - 'config/universe.lock.json'
+      - 'config/universe.import.json'
+      - 'tools/universe_import.py'
+      - 'tools/prepare_locked_universe.sh'
+      - 'tools/tests/**'
       - '.github/workflows/unity-ci.yml'
   pull_request:
     branches:
@@ -17,6 +22,11 @@ on:
     paths:
       - 'MineITCityBuilder/**'
       - 'config/unity.lock.json'
+      - 'config/universe.lock.json'
+      - 'config/universe.import.json'
+      - 'tools/universe_import.py'
+      - 'tools/prepare_locked_universe.sh'
+      - 'tools/tests/**'
       - '.github/workflows/unity-ci.yml'
   workflow_dispatch:
 
@@ -30,7 +40,7 @@ permissions:
 
 jobs:
   sanity:
-    name: Validate pinned Unity configuration
+    name: Validate pinned project and canon
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -41,6 +51,7 @@ jobs:
         run: |
           python3 - <<'PY'
           import json
+          import subprocess
           from pathlib import Path
 
           root = Path(".")
@@ -59,18 +70,42 @@ jobs:
                       f"{package}: manifest={actual!r}, lock={version!r}"
                   )
 
-          generated = list(
-              (root / "MineITCityBuilder/Assets/Game/Generated").glob("**/*")
-          ) if (root / "MineITCityBuilder/Assets/Game/Generated").exists() else []
-          tracked_generated = [p for p in generated if p.is_file()]
-          if tracked_generated:
+          tracked = subprocess.run(
+              ["git", "ls-files", "MineITCityBuilder/Assets/Game/Generated"],
+              check=True,
+              capture_output=True,
+              text=True,
+          ).stdout.strip()
+          if tracked:
               raise SystemExit(
-                  "Generated bootstrap assets must not be committed: "
-                  + ", ".join(map(str, tracked_generated))
+                  "Generated runtime assets must not be committed:\n" + tracked
               )
 
-          print(f"Unity {expected_unity} package lock is consistent.")
+          universe_lock = json.loads((root / "config/universe.lock.json").read_text())
+          if len(universe_lock.get("commit", "")) != 40:
+              raise SystemExit("Universe lock must pin an exact 40-character SHA.")
+
+          print(
+              f"Unity {expected_unity} and Universe {universe_lock['commit']} locks are structurally valid."
+          )
           PY
+
+      - name: Test Universe importer validators
+        run: python3 -m unittest discover -s tools/tests -p 'test_universe_import.py'
+
+      - name: Fetch and import locked Universe
+        shell: bash
+        run: tools/prepare_locked_universe.sh "$RUNNER_TEMP/mineit-universe"
+
+      - name: Verify deterministic canon output
+        shell: bash
+        run: |
+          rm -rf "$RUNNER_TEMP/canon-repro"
+          python3 tools/universe_import.py             --source "$RUNNER_TEMP/mineit-universe"             --output "$RUNNER_TEMP/canon-repro"
+          cmp MineITCityBuilder/Assets/Game/Generated/Resources/Canon/canon.catalog.json "$RUNNER_TEMP/canon-repro/canon.catalog.json"
+          cmp MineITCityBuilder/Assets/Game/Generated/Resources/Canon/atlas.index.json "$RUNNER_TEMP/canon-repro/atlas.index.json"
+          cmp MineITCityBuilder/Assets/Game/Generated/Resources/Canon/canon.provenance.json "$RUNNER_TEMP/canon-repro/canon.provenance.json"
+          cat MineITCityBuilder/Assets/Game/Generated/Resources/Canon/canon.provenance.json
 
   editmode-tests:
     name: Unity EditMode tests
@@ -80,6 +115,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Fetch and import locked Universe
+        shell: bash
+        run: tools/prepare_locked_universe.sh "$RUNNER_TEMP/mineit-universe"
 
       - name: Verify Unity activation secrets
         shell: bash
@@ -126,6 +165,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Fetch and import locked Universe
+        shell: bash
+        run: tools/prepare_locked_universe.sh "$RUNNER_TEMP/mineit-universe"
+
       - name: Install pinned GameCI CLI
         shell: bash
         run: |
@@ -159,9 +202,6 @@ jobs:
             exit "$game_ci_exit"
           fi
 
-          # GameCI CLI v0.1.72 can report a post-build validation failure after
-          # a custom Unity build method succeeds. Verify the produced APK
-          # structurally before accepting that known false-negative path.
           unzip -tqq "$apk"
           unzip -l "$apk" | grep -q 'AndroidManifest.xml'
           unzip -l "$apk" | grep -q 'lib/arm64-v8a/libunity.so'
