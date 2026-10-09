@@ -12,6 +12,7 @@ on:
       - 'config/unity.lock.json'
       - 'config/universe.lock.json'
       - 'config/universe.import.json'
+      - 'config/android-dev-signing.json'
       - 'tools/universe_import.py'
       - 'tools/prepare_locked_universe.sh'
       - 'tools/tests/**'
@@ -24,6 +25,7 @@ on:
       - 'config/unity.lock.json'
       - 'config/universe.lock.json'
       - 'config/universe.import.json'
+      - 'config/android-dev-signing.json'
       - 'tools/universe_import.py'
       - 'tools/prepare_locked_universe.sh'
       - 'tools/tests/**'
@@ -116,6 +118,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Restore Unity EditMode cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            MineITCityBuilder/Library
+            MineITCityBuilder/Assets/Game/Generated
+          key: unity-editmode-v1-${{ runner.os }}-6000.3.25f1-${{ hashFiles('MineITCityBuilder/Packages/**', 'MineITCityBuilder/ProjectSettings/**', 'config/unity.lock.json', 'config/universe.lock.json') }}-${{ github.sha }}
+          restore-keys: |
+            unity-editmode-v1-${{ runner.os }}-6000.3.25f1-${{ hashFiles('MineITCityBuilder/Packages/**', 'MineITCityBuilder/ProjectSettings/**', 'config/unity.lock.json', 'config/universe.lock.json') }}-
+
       - name: Fetch and import locked Universe
         shell: bash
         run: tools/prepare_locked_universe.sh "$RUNNER_TEMP/mineit-universe"
@@ -166,9 +178,37 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Restore Unity Android cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            MineITCityBuilder/Library
+            MineITCityBuilder/Assets/Game/Generated
+          key: unity-android-v1-${{ runner.os }}-6000.3.25f1-${{ hashFiles('MineITCityBuilder/Packages/**', 'MineITCityBuilder/ProjectSettings/**', 'config/unity.lock.json', 'config/universe.lock.json') }}-${{ github.sha }}
+          restore-keys: |
+            unity-android-v1-${{ runner.os }}-6000.3.25f1-${{ hashFiles('MineITCityBuilder/Packages/**', 'MineITCityBuilder/ProjectSettings/**', 'config/unity.lock.json', 'config/universe.lock.json') }}-
+
       - name: Fetch and import locked Universe
         shell: bash
         run: tools/prepare_locked_universe.sh "$RUNNER_TEMP/mineit-universe"
+
+      - name: Write CI build context
+        shell: bash
+        run: |
+          mkdir -p MineITCityBuilder/Library/MineIT
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          context = {
+              "runNumber": os.environ["GITHUB_RUN_NUMBER"],
+              "gitSha": os.environ["GITHUB_SHA"],
+          }
+          path = Path("MineITCityBuilder/Library/MineIT/ci-build-context.json")
+          path.write_text(json.dumps(context, separators=(",", ":")), encoding="utf-8")
+          print(f"Build context: run {context['runNumber']} sha {context['gitSha'][:8]}")
+          PY
 
       - name: Install pinned GameCI CLI
         shell: bash
@@ -206,6 +246,28 @@ jobs:
           unzip -tqq "$apk"
           unzip -l "$apk" | grep -q 'AndroidManifest.xml'
           unzip -l "$apk" | grep -q 'lib/arm64-v8a/libunity.so'
+
+          android_sdk="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
+          apksigner="$(find "$android_sdk/build-tools" -type f -name apksigner -print 2>/dev/null | sort -V | tail -1)"
+          if [[ -z "$apksigner" ]]; then
+            echo "::error::Could not locate Android apksigner to verify the development signature."
+            exit 1
+          fi
+
+          signature_output="$("$apksigner" verify --print-certs "$apk")"
+          echo "$signature_output"
+          actual_fingerprint="$(printf '%s\n' "$signature_output" | sed -n 's/^Signer #1 certificate SHA-256 digest: //p' | head -1 | tr '[:lower:]' '[:upper:]')"
+          expected_fingerprint="$(python3 - <<'PY'
+          import json
+          value = json.load(open("config/android-dev-signing.json", encoding="utf-8"))["sha256Fingerprint"]
+          print(value.replace(":", "").upper())
+          PY
+          )"
+          actual_fingerprint="${actual_fingerprint//:/}"
+          if [[ "$actual_fingerprint" != "$expected_fingerprint" ]]; then
+            echo "::error::APK development signing fingerprint mismatch. Expected $expected_fingerprint, got $actual_fingerprint."
+            exit 1
+          fi
 
           size="$(stat -c%s "$apk")"
           if (( size < 1048576 )); then
