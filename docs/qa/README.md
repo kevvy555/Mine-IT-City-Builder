@@ -93,6 +93,7 @@ A gate result must point to reproducible evidence:
 11. [Long-Run Stability and Balance QA](11_LONG_RUN_STABILITY_AND_BALANCE.md)
 12. [Execution, Evidence and Defect Process](12_EXECUTION_EVIDENCE_AND_DEFECT_PROCESS.md)
 13. [Final Specification Acceptance Gate](13_FINAL_SPECIFICATION_ACCEPTANCE_GATE.md)
+14. [Rendered UI Phase Acceptance](14_RENDERED_UI_PHASE_ACCEPTANCE.md)
 
 ## QA identifier conventions
 
@@ -109,7 +110,8 @@ QA artefacts use stable IDs:
 - `QA-PERF-*` — performance/device;
 - `QA-UX-*` — UX/accessibility/explainability;
 - `QA-LONG-*` — long-run/balance;
-- `QA-REL-*` — final/release acceptance.
+- `QA-REL-*` — final/release acceptance;
+- `QA-UI-*` — rendered UI integrity and per-phase UI acceptance.
 
 QA IDs are test identities, not replacements for KCB requirements.
 
@@ -132,6 +134,7 @@ Automate everything deterministic and repeatable.
 
 Manual QA remains appropriate for:
 
+- physical Android rendered-UI verification;
 - perceived touch usability;
 - visual identity;
 - soundscape;
@@ -141,6 +144,8 @@ Manual QA remains appropriate for:
 - physical-device thermal observations.
 
 Manual does not mean undocumented. Manual checks still use IDs, procedure and recorded result.
+
+Every implementation phase must also execute the rendered-UI plan in [14_RENDERED_UI_PHASE_ACCEPTANCE.md](14_RENDERED_UI_PHASE_ACCEPTANCE.md). A phase with no intended UI change must explicitly declare UI-0 and pass the current shell regression; omission of a UI plan is not acceptable.
 
 ## Relationship to implementation gates
 
