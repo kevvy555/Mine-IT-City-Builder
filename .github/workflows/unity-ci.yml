@@ -143,6 +143,7 @@ jobs:
         with:
           projectPath: MineITCityBuilder
           unityVersion: 6000.3.25f1
+          cliVersion: v0.1.72
           testMode: EditMode
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           checkName: MineIT City Builder EditMode
@@ -152,7 +153,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: unity-editmode-results-${{ github.run_number }}
-          path: ${{ steps.tests.outputs.artifactsPath }}
+          path: artifacts
           if-no-files-found: warn
           retention-days: 14
 
