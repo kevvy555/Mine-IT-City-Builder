@@ -66,9 +66,12 @@ QA-REL-040:
 - signed APK/AAB valid;
 - lifecycle/background/save checks pass.
 
-### UX/accessibility
+### Rendered UI / UX / accessibility
 
 QA-REL-050:
+- all phase UI impact declarations and required `QA-UI-*` evidence present;
+- no unresolved blank/missing-font/missing-theme/clipped critical UI defect;
+- supported-device rendered UI smoke current;
 - touch-only core workflow;
 - diagnosis tasks;
 - UI scaling;
@@ -112,6 +115,7 @@ Failed:
 Blocked:
 Automated tests:
 Manual tests:
+Rendered UI device evidence:
 100-year suites:
 B250K result:
 Open defects:
